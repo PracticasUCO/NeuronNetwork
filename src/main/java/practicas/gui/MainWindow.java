@@ -25,11 +25,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
 
 	loadToolBar = new javax.swing.JToolBar();
-	leftGlue = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0),
-		new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
 	loadTrainDataButton = new javax.swing.JButton();
-	centerGlue = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0),
-		new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
 	loadTestDataButton = new javax.swing.JButton();
 	rightGlue = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0),
 		new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
@@ -67,7 +63,6 @@ public class MainWindow extends javax.swing.JFrame {
 			javax.swing.BoxLayout.Y_AXIS));
 
 	loadToolBar.setRollover(true);
-	loadToolBar.add(leftGlue);
 
 	loadTrainDataButton.setText("Cargar fichero de entrenamiento");
 	loadTrainDataButton.setFocusable(false);
@@ -81,7 +76,6 @@ public class MainWindow extends javax.swing.JFrame {
 	    }
 	});
 	loadToolBar.add(loadTrainDataButton);
-	loadToolBar.add(centerGlue);
 
 	loadTestDataButton.setText("Cargar fichero de test");
 	loadTestDataButton.setFocusable(false);
@@ -351,7 +345,6 @@ public class MainWindow extends javax.swing.JFrame {
 
 
     private javax.swing.JPanel actionPanel;
-    private javax.swing.Box.Filler centerGlue;
     private javax.swing.JLabel finalTestError;
     private javax.swing.JLabel finalTestErrorLabel;
     private javax.swing.JLabel finalTrainError;
@@ -366,7 +359,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel infoLabel;
     private javax.swing.JLabel learningFactorLabel;
     private javax.swing.JSlider learningFactorSlider;
-    private javax.swing.Box.Filler leftGlue;
     private javax.swing.JButton loadTestDataButton;
     private javax.swing.JToolBar loadToolBar;
     private javax.swing.JButton loadTrainDataButton;
