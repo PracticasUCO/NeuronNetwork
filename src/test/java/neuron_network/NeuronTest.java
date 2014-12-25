@@ -23,14 +23,14 @@ public class NeuronTest {
 	  An empty neuron will start with a number (the bias) followed by ---Neuron---> followed
 	  by a number (the output).
 	 */
-	empty_neuron_regex = "^-{0,1}\\d+(\\.\\d+)? ---Neuron---> \\d+(\\.\\d+)?$";
+	empty_neuron_regex = "^-{0,1}\\d+(\\.\\d+)? ---Neuron---> Y$";
 
 	/*
 	  A non empty neuron will start with ( followed by the number of each input. Each of these numbers will be
 	  followed by an i plus a number. Also these numbers will be separated by a ",". When all inputs are listed you
 	  must find a ) plus a number (the bias) plus the string ---Neuron---> plus a number (the output).
 	 */
-	neuron_regex = "^\\(-{0,1}\\d+(\\.\\d+)? x i\\d+(, -{0,1}\\d+(\\.\\d+)? x i\\d+)*\\) \\+ -{0,1}\\d+(\\.\\d+)? ---Neuron---> \\d+(\\.\\d+)?$";
+	neuron_regex = "^\\(-{0,1}\\d+(\\.\\d+)? x X\\d+(, -{0,1}\\d+(\\.\\d+)? x X\\d+)*\\) \\+ -{0,1}\\d+(\\.\\d+)? ---Neuron---> Y$";
 	random_generator = new Random();
     }
     

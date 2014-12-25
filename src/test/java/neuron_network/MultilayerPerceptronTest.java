@@ -388,8 +388,7 @@ public class MultilayerPerceptronTest {
     @Test
     public void checkToStringMethod() {
     	String network = _xor_2_mp.toString();
-    	String network_regex = "Learning factor: \\d+\\.\\d+\\nInertia value: \\d+\\.\\d+\\nNumber of hidden layers: \\d+\\nSize of hidden layers: \\d+\\nSize of output layer: \\d+\\n\\n(Layer \\d+ of \\d+\\n(\\t\\(.*\\) \\+ \\d+\\.\\d+ ---Neuron---> \\d+\\.\\d+\\n)+\\n)+Output layer\\n(.*\\n)+";
-    	
+    	String network_regex = "Learning factor: \\d+\\.\\d+\\nInertia value: \\d+\\.\\d+\\nNumber of hidden layers: \\d+\\nSize of hidden layers: \\d+\\nSize of output layer: \\d+\\n\\n(Layer \\d+ of \\d+\\n(\\t\\(.*\\) \\+ \\d+\\.\\d+ ---Neuron---> .*\\d+\n)+\\n)+Output layer\\n(.*\\n)+";
     	assertTrue(network.matches(network_regex));
     }
 }

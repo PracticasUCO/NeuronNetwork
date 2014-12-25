@@ -482,13 +482,15 @@ public class MultilayerPerceptron {
 	network += "Size of hidden layers: " + getLayerSize(0) + "\n";
 	network += "Size of output layer: " + getLayerSize(-1) + "\n";
 	network += "\n";
+	
+	ArrayList<String> labels = new ArrayList<String>();
 
 	for (int i = 0; i < getNumberOfHiddenLayers(); i++) {
 	    network += "Layer " + (i + 1) + " of " + getNumberOfHiddenLayers()
 		    + "\n";
 
 	    for (int j = 0; j < getLayerSize(i); j++) {
-		network += "\t" + getNeuron(i, j) + "\n";
+		network += "\t" + getNeuron(i, j) + j + "\n";
 	    }
 
 	    network += "\n";
@@ -496,8 +498,8 @@ public class MultilayerPerceptron {
 
 	network += "Output layer\n";
 
-	for (Neuron n : _outputLayer) {
-	    network += "\t" + n + "\n";
+	for(int i = 0; i < _outputLayer.size(); i++) {
+	    network += "\t" + _outputLayer.get(i) + i + "\n";
 	}
 
 	network += "\n";

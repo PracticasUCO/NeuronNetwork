@@ -86,7 +86,7 @@ public class Neuron {
 	if (inputs.size() > 0) {
 	    n += "(";
 	    for (int i = 0; i < inputs.size(); i++) {
-		n = n + inputs.get(i) + " x i" + i;
+		n = n + inputs.get(i) + " x X" + i;
 
 		if (i < inputs.size() - 1) {
 		    n += ", ";
@@ -96,7 +96,7 @@ public class Neuron {
 	    }
 	}
 
-	n += bias + " ---Neuron---> " + output;
+	n += bias + " ---Neuron---> Y";
 
 	return n;
     }
