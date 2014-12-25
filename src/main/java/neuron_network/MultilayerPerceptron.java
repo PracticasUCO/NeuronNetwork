@@ -544,7 +544,7 @@ public class MultilayerPerceptron {
        It also reset the layer.
        @param n_neurons the number of neurons to set in the output layer
     **/
-    protected void setOutputLayerSize(int n_neurons) {
+    public void setOutputLayerSize(int n_neurons) {
 		_outputLayer.clear();
 		clearOutput();
 	
