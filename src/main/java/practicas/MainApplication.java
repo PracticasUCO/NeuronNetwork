@@ -12,8 +12,8 @@ import practicas.controller.MainController;
  * @author gowikel
  */
 public class MainApplication {
-   public static void main(String[] args) {
-      MainController.initController();
-      MainController.run();
-   }
+    public static void main(String[] args) {
+	MainController.initController();
+	MainController.run();
+    }
 }
