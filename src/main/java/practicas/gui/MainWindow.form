@@ -33,6 +33,16 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
       <SubComponents>
+        <Component class="javax.swing.Box$Filler" name="leftGlue">
+          <Properties>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[32767, 0]"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="classDetails" type="java.lang.String" value="Box.Filler.HorizontalGlue"/>
+          </AuxValues>
+        </Component>
         <Component class="javax.swing.JButton" name="loadTrainDataButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Cargar fichero de entrenamiento"/>
@@ -40,6 +50,19 @@
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="loadTrainDataButtonMouseClicked"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.Box$Filler" name="centerGlue">
+          <Properties>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[32767, 0]"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="classDetails" type="java.lang.String" value="Box.Filler.HorizontalGlue"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="loadTestDataButton">
           <Properties>
@@ -48,8 +71,11 @@
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="loadTestDataButtonMouseClicked"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.Box$Filler" name="glue">
+        <Component class="javax.swing.Box$Filler" name="rightGlue">
           <Properties>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[32767, 0]"/>
@@ -75,10 +101,13 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JSlider" name="loadTrainingSlider">
+    <Component class="javax.swing.JSlider" name="learningFactorSlider">
       <Properties>
         <Property name="majorTickSpacing" type="int" value="1"/>
         <Property name="minorTickSpacing" type="int" value="1"/>
+        <Property name="paintTicks" type="boolean" value="true"/>
+        <Property name="snapToTicks" type="boolean" value="true"/>
+        <Property name="value" type="int" value="90"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="inertiaFactorLabel">
@@ -90,6 +119,10 @@
       <Properties>
         <Property name="majorTickSpacing" type="int" value="1"/>
         <Property name="minorTickSpacing" type="int" value="1"/>
+        <Property name="paintTicks" type="boolean" value="true"/>
+        <Property name="snapToTicks" type="boolean" value="true"/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+        <Property name="value" type="int" value="10"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="spinnerOptionsPanel">
@@ -118,6 +151,9 @@
                 <Property name="text" type="java.lang.String" value="1e-6"/>
                 <Property name="toolTipText" type="java.lang.String" value=""/>
               </Properties>
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="minimumImprovementFieldKeyTyped"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -256,22 +292,6 @@
         </Container>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JScrollPane" name="outputAreaPanel">
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JTextArea" name="outputArea">
-          <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-            <Property name="columns" type="int" value="20"/>
-            <Property name="lineWrap" type="boolean" value="true"/>
-            <Property name="rows" type="int" value="5"/>
-            <Property name="doubleBuffered" type="boolean" value="true"/>
-            <Property name="dragEnabled" type="boolean" value="true"/>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
     <Container class="javax.swing.JPanel" name="actionPanel">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
@@ -282,7 +302,11 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Entrenar"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="trainButtonMouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -309,18 +333,6 @@
               <Color blue="28" green="2" red="9b" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="No se han cargado los datos a&#xfa;n"/>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
-    <Container class="javax.swing.JPanel" name="progressPanel">
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JProgressBar" name="progressBar">
-          <Properties>
-            <Property name="toolTipText" type="java.lang.String" value=""/>
-            <Property name="alignmentX" type="float" value="0.0"/>
           </Properties>
         </Component>
       </SubComponents>

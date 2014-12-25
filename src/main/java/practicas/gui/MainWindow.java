@@ -5,6 +5,8 @@
  */
 package practicas.gui;
 
+import practicas.controller.MainController;
+import javax.swing.JFileChooser;
 /**
  *
  * @author gowikel
@@ -28,12 +30,14 @@ public class MainWindow extends javax.swing.JFrame {
    private void initComponents() {
 
       loadToolBar = new javax.swing.JToolBar();
+      leftGlue = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
       loadTrainDataButton = new javax.swing.JButton();
+      centerGlue = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
       loadTestDataButton = new javax.swing.JButton();
-      glue = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+      rightGlue = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
       useBiasCheckBox = new javax.swing.JCheckBox();
       learningFactorLabel = new javax.swing.JLabel();
-      loadTrainingSlider = new javax.swing.JSlider();
+      learningFactorSlider = new javax.swing.JSlider();
       inertiaFactorLabel = new javax.swing.JLabel();
       inertiaFactorSlider = new javax.swing.JSlider();
       spinnerOptionsPanel = new javax.swing.JPanel();
@@ -52,34 +56,42 @@ public class MainWindow extends javax.swing.JFrame {
       finalTrainError = new javax.swing.JLabel();
       finalTestErrorLabel = new javax.swing.JLabel();
       finalTestError = new javax.swing.JLabel();
-      outputAreaPanel = new javax.swing.JScrollPane();
-      outputArea = new javax.swing.JTextArea();
       actionPanel = new javax.swing.JPanel();
       trainButton = new javax.swing.JButton();
       statusPanel = new javax.swing.JPanel();
       statusLabel = new javax.swing.JLabel();
       infoLabel = new javax.swing.JLabel();
-      progressPanel = new javax.swing.JPanel();
-      progressBar = new javax.swing.JProgressBar();
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
       setTitle("Multilayer Perceptron");
       getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
       loadToolBar.setRollover(true);
+      loadToolBar.add(leftGlue);
 
       loadTrainDataButton.setText("Cargar fichero de entrenamiento");
       loadTrainDataButton.setFocusable(false);
       loadTrainDataButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
       loadTrainDataButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+      loadTrainDataButton.addMouseListener(new java.awt.event.MouseAdapter() {
+         public void mouseClicked(java.awt.event.MouseEvent evt) {
+            loadTrainDataButtonMouseClicked(evt);
+         }
+      });
       loadToolBar.add(loadTrainDataButton);
+      loadToolBar.add(centerGlue);
 
       loadTestDataButton.setText("Cargar fichero de test");
       loadTestDataButton.setFocusable(false);
       loadTestDataButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
       loadTestDataButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+      loadTestDataButton.addMouseListener(new java.awt.event.MouseAdapter() {
+         public void mouseClicked(java.awt.event.MouseEvent evt) {
+            loadTestDataButtonMouseClicked(evt);
+         }
+      });
       loadToolBar.add(loadTestDataButton);
-      loadToolBar.add(glue);
+      loadToolBar.add(rightGlue);
 
       useBiasCheckBox.setText("Usa bias");
       useBiasCheckBox.setFocusable(false);
@@ -93,15 +105,22 @@ public class MainWindow extends javax.swing.JFrame {
       learningFactorLabel.setToolTipText("");
       getContentPane().add(learningFactorLabel);
 
-      loadTrainingSlider.setMajorTickSpacing(1);
-      loadTrainingSlider.setMinorTickSpacing(1);
-      getContentPane().add(loadTrainingSlider);
+      learningFactorSlider.setMajorTickSpacing(1);
+      learningFactorSlider.setMinorTickSpacing(1);
+      learningFactorSlider.setPaintTicks(true);
+      learningFactorSlider.setSnapToTicks(true);
+      learningFactorSlider.setValue(90);
+      getContentPane().add(learningFactorSlider);
 
       inertiaFactorLabel.setText("Factor de inercia (%)");
       getContentPane().add(inertiaFactorLabel);
 
       inertiaFactorSlider.setMajorTickSpacing(1);
       inertiaFactorSlider.setMinorTickSpacing(1);
+      inertiaFactorSlider.setPaintTicks(true);
+      inertiaFactorSlider.setSnapToTicks(true);
+      inertiaFactorSlider.setToolTipText("");
+      inertiaFactorSlider.setValue(10);
       getContentPane().add(inertiaFactorSlider);
 
       spinnerOptionsPanel.setLayout(new java.awt.GridLayout(2, 3));
@@ -112,6 +131,11 @@ public class MainWindow extends javax.swing.JFrame {
       minimumImprovementField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
       minimumImprovementField.setText("1e-6");
       minimumImprovementField.setToolTipText("");
+      minimumImprovementField.addKeyListener(new java.awt.event.KeyAdapter() {
+         public void keyTyped(java.awt.event.KeyEvent evt) {
+            minimumImprovementFieldKeyTyped(evt);
+         }
+      });
       minimumImprovementPanel.add(minimumImprovementField);
 
       spinnerOptionsPanel.add(minimumImprovementPanel);
@@ -170,20 +194,16 @@ public class MainWindow extends javax.swing.JFrame {
 
       getContentPane().add(spinnerOptionsPanel);
 
-      outputArea.setEditable(false);
-      outputArea.setColumns(20);
-      outputArea.setLineWrap(true);
-      outputArea.setRows(5);
-      outputArea.setDoubleBuffered(true);
-      outputArea.setDragEnabled(true);
-      outputAreaPanel.setViewportView(outputArea);
-
-      getContentPane().add(outputAreaPanel);
-
       actionPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
       trainButton.setText("Entrenar");
       trainButton.setToolTipText("");
+      trainButton.setEnabled(false);
+      trainButton.addMouseListener(new java.awt.event.MouseAdapter() {
+         public void mouseClicked(java.awt.event.MouseEvent evt) {
+            trainButtonMouseClicked(evt);
+         }
+      });
       actionPanel.add(trainButton);
 
       getContentPane().add(actionPanel);
@@ -201,60 +221,117 @@ public class MainWindow extends javax.swing.JFrame {
 
       getContentPane().add(statusPanel);
 
-      progressPanel.setLayout(new javax.swing.BoxLayout(progressPanel, javax.swing.BoxLayout.LINE_AXIS));
-
-      progressBar.setToolTipText("");
-      progressBar.setAlignmentX(0.0F);
-      progressPanel.add(progressBar);
-
-      getContentPane().add(progressPanel);
-
       pack();
    }// </editor-fold>//GEN-END:initComponents
 
-   /**
-    * @param args the command line arguments
-    */
-   public static void main(String args[]) {
-      /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-       * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-       */
-      try {
-         for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-            if ("Nimbus".equals(info.getName())) {
-               javax.swing.UIManager.setLookAndFeel(info.getClassName());
-               break;
-            }
-         }
-      } catch (ClassNotFoundException ex) {
-         java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-      } catch (InstantiationException ex) {
-         java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-      } catch (IllegalAccessException ex) {
-         java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-      } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-         java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+   private void loadTrainDataButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loadTrainDataButtonMouseClicked
+      int returnVal = fileChooser.showOpenDialog(this);
+      
+      if(returnVal == JFileChooser.APPROVE_OPTION) {
+         MainController.setTrainInput(fileChooser.getSelectedFile().getAbsolutePath());
       }
-        //</editor-fold>
+      
+   }//GEN-LAST:event_loadTrainDataButtonMouseClicked
 
-      /* Create and display the form */
-      java.awt.EventQueue.invokeLater(new Runnable() {
-         public void run() {
-            new MainWindow().setVisible(true);
-         }
-      });
+   private void loadTestDataButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loadTestDataButtonMouseClicked
+      int returnVal = fileChooser.showOpenDialog(this);
+      
+      if(returnVal == JFileChooser.APPROVE_OPTION) {
+         MainController.setTestInput(fileChooser.getSelectedFile().getAbsolutePath());
+      }
+   }//GEN-LAST:event_loadTestDataButtonMouseClicked
+
+   private void minimumImprovementFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_minimumImprovementFieldKeyTyped
+     MainController.setMinimumImprovement(getMinimumImprovement());
+   }//GEN-LAST:event_minimumImprovementFieldKeyTyped
+
+   private void trainButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_trainButtonMouseClicked
+	   
+      if(trainButton.isEnabled()){
+         MainController.trainData();
+      }
+      
+   }//GEN-LAST:event_trainButtonMouseClicked
+
+   
+   
+   /**
+    * @return the learning factor of the network
+    */
+   public double getLearningFactor() {
+      return ((double) learningFactorSlider.getValue()) / ((double) learningFactorSlider.getMaximum());
    }
+   
+   /**
+    * @return the inertia factor of the network
+    */
+   public double getInertiaFactor() {
+      return ((double) inertiaFactorSlider.getValue()) / ((double) inertiaFactorSlider.getMaximum());
+   }
+   
+   public double getMinimumImprovement() {
+      double m;
+      
+      try {
+         m = Double.valueOf(minimumImprovementField.getText());
+      }
+      catch(Exception e) {
+         m = -1;
+      }
+      
+      return m;
+   }
+   
+   public int getHiddenLayers() {
+      return (Integer) hiddenLayersSpinner.getValue();
+   }
+   
+   public int getHiddenNeurons() {
+      return (Integer) hiddenNeuronsSpinner.getValue();
+   }
+   
+   public int getMaxiter() {
+      return (Integer) maxiterSpinner.getValue();
+   }
+   
+   public int getTimes() {
+      return (Integer) timesSpinner.getValue();
+   }
+   
+   public void setTrainingError(String error) {
+      finalTrainError.setText(error);
+   }
+   
+   public void setTestError(String error) {
+      finalTestError.setText(error);
+   }
+   
+   public void setStatus(String status) {
+      infoLabel.setText(status);
+   }
+
+   public boolean getUseBias() {
+      return useBiasCheckBox.isSelected();
+   }
+   
+   public void enableTrain() {
+      trainButton.setEnabled(true);
+   }
+   
+   public void disableTrain() {
+      trainButton.setEnabled(false);
+   }
+
+   private final JFileChooser fileChooser = new JFileChooser();
 
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JPanel actionPanel;
+   private javax.swing.Box.Filler centerGlue;
    private javax.swing.JLabel finalTestError;
    private javax.swing.JLabel finalTestErrorLabel;
    private javax.swing.JLabel finalTrainError;
    private javax.swing.JLabel finalTrainErrorLabel;
    private javax.swing.JPanel generalInfoPanel;
-   private javax.swing.Box.Filler glue;
    private javax.swing.JPanel hiddenLayersPanel;
    private javax.swing.JSpinner hiddenLayersSpinner;
    private javax.swing.JPanel hiddenNeuronsPanel;
@@ -263,18 +340,16 @@ public class MainWindow extends javax.swing.JFrame {
    private javax.swing.JSlider inertiaFactorSlider;
    private javax.swing.JLabel infoLabel;
    private javax.swing.JLabel learningFactorLabel;
+   private javax.swing.JSlider learningFactorSlider;
+   private javax.swing.Box.Filler leftGlue;
    private javax.swing.JButton loadTestDataButton;
    private javax.swing.JToolBar loadToolBar;
    private javax.swing.JButton loadTrainDataButton;
-   private javax.swing.JSlider loadTrainingSlider;
    private javax.swing.JPanel maxiterPanel;
    private javax.swing.JSpinner maxiterSpinner;
    private javax.swing.JTextField minimumImprovementField;
    private javax.swing.JPanel minimumImprovementPanel;
-   private javax.swing.JTextArea outputArea;
-   private javax.swing.JScrollPane outputAreaPanel;
-   private javax.swing.JProgressBar progressBar;
-   private javax.swing.JPanel progressPanel;
+   private javax.swing.Box.Filler rightGlue;
    private javax.swing.JPanel spinnerOptionsPanel;
    private javax.swing.JLabel statusLabel;
    private javax.swing.JPanel statusPanel;
