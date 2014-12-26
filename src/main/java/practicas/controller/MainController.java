@@ -2,6 +2,8 @@ package practicas.controller;
 
 import java.io.IOException;
 
+import javax.swing.SwingUtilities;
+
 import neuron_network.NetworkData;
 import practicas.gui.MainWindow;
 
@@ -11,6 +13,7 @@ public class MainController {
     private static MainWindow window;
     private static NetworkData trainData;
     private static NetworkData testData;
+    private static TrainController worker;
     
     public static void setTrainData(String path) {
 	System.out.println("Leyendo " + path + " como datos de entrenamiento");
@@ -51,6 +54,48 @@ public class MainController {
 	window.appendOutput("Iteraciones máximas: " + window.getMaxiter());
 	window.appendOutput("Repeticiones del algoritmo: " + window.getTimes());
 	window.appendOutput("");
+	
+	window.setProgressBarMaximumValue(window.getTimes() + 2);
+	window.setProgressBarValue(0);
+	
+	worker = new TrainController();
+	worker.times = window.getTimes();
+	worker.maxiter = window.getMaxiter();
+	worker.minimumImprovement = window.getMinimumImprovement();
+	worker.trainData = trainData;
+	worker.testData = testData;
+	worker.setup(window.getHiddenLayers(), window.getHiddenNeurons(), trainData.outputs_length());
+	window.setStatus("Entrenamiento 1 de " + window.getTimes());
+	window.setProgressBarValue(1);
+	window.disableAllButtons();
+	worker.execute();
+    }
+    
+    public static void processIntermidiateTrain(int iteration, double trainError, double testError) {
+	window.appendOutput("Acabado entrenamiento " + (iteration + 1));
+	window.appendOutput("\tError en entrenamiento: " + trainError);
+	window.appendOutput("\tError en test: " + testError);
+	window.appendOutput("");
+	window.setProgressBarValue(iteration + 2);
+	
+	if(iteration + 1 < window.getTimes()) {
+	    window.setStatus("Entrenamiento " + (iteration + 2) + " de " + window.getTimes() + ".");
+	}
+	else {
+	    window.setStatus("Calculando estadisticas.");
+	}
+    }
+    
+    public static void processFinalTrain(double trainMean, double trainDesviation, double testMean, double testDesviation, String network) {
+	window.appendOutput("Entrenamiento finalizado.");
+	window.appendOutput("Red neuronal: ");
+	window.appendOutput(network);
+	window.appendOutput("Estadisticas: ");
+	window.appendOutput("Error en entrenamiento: " + trainMean + " +- " + trainDesviation);
+	window.appendOutput("Error en test: " + testMean + " +- " + testDesviation);
+	window.setProgressBarValue(window.getProgressBarMaximumValue());
+	window.setStatus("Entrenamiento finalizado");
+	window.enableAllButtons();
     }
 
     public static void initController() {
@@ -59,7 +104,7 @@ public class MainController {
 	testData = new NetworkData();
 	checkData();
     }
-
+    
     public static void run() {
 	window.setVisible(true);
     }
