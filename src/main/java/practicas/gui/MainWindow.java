@@ -63,7 +63,7 @@ public class MainWindow extends JFrame {
 	initializeComponents();
     }
     
-    public void initializeComponents() {
+    private void initializeComponents() {
 	
 	//Start window
 	mainWindow = new JTabbedPane();
