@@ -3,10 +3,13 @@ package practicas.gui;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -18,6 +21,8 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
+import javax.swing.JProgressBar;
+
 
 public class MainWindow extends JFrame {
     private static final long serialVersionUID = -4395839315288178863L;
@@ -44,12 +49,13 @@ public class MainWindow extends JFrame {
     private JPanel timesPanel;
     private JSpinner times;
     private JPanel statusPanel;
-    private JTextArea status;
+    private JLabel status;
     private JPanel actionPanel;
     private JButton trainButton;
     private JScrollPane outputWindow;
     private JPanel outputPanel;
     private JTextArea output;
+    private JProgressBar progressBar;
     
     
     
@@ -58,6 +64,7 @@ public class MainWindow extends JFrame {
     }
     
     public void initializeComponents() {
+	
 	//Start window
 	mainWindow = new JTabbedPane();
 	this.add(mainWindow);
@@ -65,7 +72,7 @@ public class MainWindow extends JFrame {
 	//Main config window
 	configWindow = new JPanel();
 	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	this.setSize((int) (screenSize.getWidth() / 2.5), (int) (screenSize.getHeight() / 2.25));
+	this.setSize((int) (screenSize.getWidth() / 2.5), (int) (screenSize.getHeight() / 1.9));
 	//this.add(window);
 	mainWindow.addTab("Configuración", configWindow);
 	configWindow.setLayout(new BoxLayout(configWindow, BoxLayout.Y_AXIS));
@@ -89,8 +96,13 @@ public class MainWindow extends JFrame {
 	learningFactorPanel = new JPanel();
 	learningFactorPanel.setLayout(new BoxLayout(learningFactorPanel, BoxLayout.X_AXIS));
 	learningFactorPanel.setBorder(new TitledBorder("Factor de aprendizaje"));
-	learningFactor = new JSlider(0, 100);
-	learningFactor.setValue(90);
+	learningFactor = new JSlider(0, 1000);
+	learningFactor.setValue(900);
+	learningFactor.setLabelTable(makeDictionaryForASlider(0, 1000, 100));
+	learningFactor.setPaintLabels(true);
+	learningFactor.setMinorTickSpacing(10);
+	learningFactor.setMajorTickSpacing(50);
+	learningFactor.setPaintTicks(true);
 	learningFactorPanel.add(learningFactor);
 	learningFactorPanel.setBounds(5, 5, 30, 30);
 	configWindow.add(learningFactorPanel);
@@ -100,11 +112,17 @@ public class MainWindow extends JFrame {
 	inertiaFactorPanel = new JPanel();
 	inertiaFactorPanel.setLayout(new BoxLayout(inertiaFactorPanel, BoxLayout.X_AXIS));
 	inertiaFactorPanel.setBorder(new TitledBorder("Factor de inercia"));
-	inertiaFactor = new JSlider(0, 100);
-	inertiaFactor.setValue(10);
+	inertiaFactor = new JSlider(0, 1000);
+	inertiaFactor.setValue(100);
+	inertiaFactor.setLabelTable(makeDictionaryForASlider(0, 1000, 100));
+	inertiaFactor.setPaintLabels(true);
+	inertiaFactor.setMinorTickSpacing(10);
+	inertiaFactor.setMajorTickSpacing(50);
+	inertiaFactor.setPaintTicks(true);
 	inertiaFactorPanel.add(inertiaFactor);
 	inertiaFactorPanel.setBounds(5, 5, 30, 30);
 	configWindow.add(inertiaFactorPanel);
+	configWindow.add(Box.createVerticalStrut(10));
 	
 	///Spinner options
 	spinnerOptionsPanel = new JPanel();
@@ -158,26 +176,30 @@ public class MainWindow extends JFrame {
 	times = new JSpinner(new SpinnerNumberModel(5, 5, Integer.MAX_VALUE, 1));
 	timesPanel.add(times);
 	spinnerOptionsPanel.add(timesPanel);
-
-	//Status
-	statusPanel = new JPanel();
-	statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
-	statusPanel.setBorder(new TitledBorder("Status"));
-	status = new JTextArea("No se han cargado los datos aún");
-	status.setEditable(false);
-	statusPanel.add(status);
-	spinnerOptionsPanel.add(statusPanel);
 	
 	configWindow.add(spinnerOptionsPanel);
-	configWindow.add(Box.createVerticalStrut(5));
+	configWindow.add(Box.createVerticalStrut(10));
 	
 	//Action panel
 	actionPanel = new JPanel();
 	actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.X_AXIS));
-	trainButton = new JButton("Entrenar");
+	
+	statusPanel = new JPanel();
+	statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
+	statusPanel.setBorder(new TitledBorder("Estado"));
+	status = new JLabel("No se han cargado los datos aún");
+	statusPanel.add(status);
+	actionPanel.add(statusPanel);
 	actionPanel.add(Box.createHorizontalGlue());
+	
+	trainButton = new JButton("Entrenar");
 	actionPanel.add(trainButton);
 	configWindow.add(actionPanel);
+	//configWindow.add(Box.createVerticalStrut(10));
+	
+	progressBar = new JProgressBar(0, (int) times.getValue() + 2);
+	progressBar.setValue(0);
+	configWindow.add(progressBar);
 	
 	//Output window
 	outputPanel = new JPanel();
@@ -186,7 +208,19 @@ public class MainWindow extends JFrame {
 	outputWindow = new JScrollPane(outputPanel);
 	
 	outputPanel.add(output);
-	mainWindow.addTab("Output", outputWindow);
+	mainWindow.addTab("Salida", outputWindow);
 	
+    }
+    
+    private Dictionary<Integer, JLabel> makeDictionaryForASlider(int start, int end, int step) {
+	Dictionary<Integer, JLabel> dic = new Hashtable<Integer, JLabel>();
+	
+	for(int i = start; i <= end; i += step) {
+	    String str = String.valueOf((double) i / (double) end);
+	    JLabel label = new JLabel(str);
+	    dic.put(i, label);
+	}
+	
+	return dic;
     }
 }
