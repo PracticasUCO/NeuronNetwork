@@ -1026,6 +1026,10 @@ public class MultilayerPerceptron {
 	    for (int j = 0; j < _inputs.size(); j++) {
 		acc += _inputs.get(j) * n.inputs.get(j);
 	    }
+	    
+	    if(use_bias) {
+		acc += n.bias;
+	    }
 
 	    n.output = 1 / (1 + Math.exp(-1 * acc));
 	}
@@ -1048,6 +1052,10 @@ public class MultilayerPerceptron {
 
 		    acc += lastNeuron.output * currentNeuron.inputs.get(h);
 		}
+		
+		if(use_bias) {
+		    acc += currentNeuron.bias;
+		}
 
 		currentNeuron.output = (1 / (1 + Math.exp(-1 * acc)));
 	    }
@@ -1068,6 +1076,10 @@ public class MultilayerPerceptron {
 	    for (int j = 0; j < lastHiddenLayer.size(); j++) {
 		Neuron lastNeuron = lastHiddenLayer.get(j);
 		acc += lastNeuron.output * n.inputs.get(j);
+	    }
+	    
+	    if(use_bias) {
+		acc += n.bias;
 	    }
 
 	    n.output = 1 / (1 + Math.exp(-1 * acc));
