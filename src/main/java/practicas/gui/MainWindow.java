@@ -292,6 +292,30 @@ public class MainWindow extends JFrame {
 	output.append("\n");
     }
     
+    public void setProgressBarMaximumValue(int maxValue) {
+	progressBar.setMaximum(maxValue);
+    }
+    
+    public void setProgressBarValue(int value) {
+	progressBar.setValue(value);
+    }
+    
+    public int getProgressBarMaximumValue() {
+	return progressBar.getMaximum();
+    }
+    
+    public void disableAllButtons() {
+	loadTrainData.setEnabled(false);
+	loadTestData.setEnabled(false);
+	trainButton.setEnabled(false);
+    }
+    
+    public void enableAllButtons() {
+	loadTrainData.setEnabled(true);
+	loadTestData.setEnabled(true);
+	trainButton.setEnabled(true);
+    }
+    
     private void onLoadTrainButtonClicked() {
 	int returnVal = fileChooser.showOpenDialog(this);
 	
