@@ -3,6 +3,8 @@ package practicas.gui;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -22,6 +24,9 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JProgressBar;
+import javax.swing.JFileChooser;
+
+import practicas.controller.MainController;
 
 
 public class MainWindow extends JFrame {
@@ -48,7 +53,6 @@ public class MainWindow extends JFrame {
     private JSpinner maxiter;
     private JPanel timesPanel;
     private JSpinner times;
-    private JPanel statusPanel;
     private JLabel status;
     private JPanel actionPanel;
     private JButton trainButton;
@@ -56,6 +60,7 @@ public class MainWindow extends JFrame {
     private JPanel outputPanel;
     private JTextArea output;
     private JProgressBar progressBar;
+    private final JFileChooser fileChooser = new JFileChooser();
     
     
     
@@ -83,6 +88,7 @@ public class MainWindow extends JFrame {
 	loadTrainData = new JButton("Cargar datos de entrenamiento");
 	loadTestData = new JButton("Cargar datos de test");
 	useBias = new JCheckBox("Bias");
+	useBias.setToolTipText("Indica si las neuronas tendrán o no bias");
 	loadAreaPanel.setLayout(new BoxLayout(loadAreaPanel, BoxLayout.X_AXIS));
 	loadAreaPanel.add(loadTrainData);
 	loadAreaPanel.add(loadTestData);
@@ -103,6 +109,7 @@ public class MainWindow extends JFrame {
 	learningFactor.setMinorTickSpacing(10);
 	learningFactor.setMajorTickSpacing(50);
 	learningFactor.setPaintTicks(true);
+	learningFactor.setToolTipText("Indica la velocidad de aprendizaje de cada neurona.");
 	learningFactorPanel.add(learningFactor);
 	learningFactorPanel.setBounds(5, 5, 30, 30);
 	configWindow.add(learningFactorPanel);
@@ -119,6 +126,7 @@ public class MainWindow extends JFrame {
 	inertiaFactor.setMinorTickSpacing(10);
 	inertiaFactor.setMajorTickSpacing(50);
 	inertiaFactor.setPaintTicks(true);
+	inertiaFactor.setToolTipText("Indica la fuerza que tendrá sobre el aprendizaje de la neurona los cambios producidos en iteraciones anteriores");
 	inertiaFactorPanel.add(inertiaFactor);
 	inertiaFactorPanel.setBounds(5, 5, 30, 30);
 	configWindow.add(inertiaFactorPanel);
@@ -141,6 +149,7 @@ public class MainWindow extends JFrame {
 		return new NumberEditor(this, "0.00000000");
 	    }
 	};
+	minimumImprovement.setToolTipText("Indica la mejora mínima entre cada retropropagación que debe mantenerse para continuar entrenando.");
 
 	minimumImprovementPanel.add(minimumImprovement);
 	spinnerOptionsPanel.add(minimumImprovementPanel);
@@ -150,14 +159,16 @@ public class MainWindow extends JFrame {
 	hiddenLayersPanel.setLayout(new BoxLayout(hiddenLayersPanel, BoxLayout.X_AXIS));
 	hiddenLayersPanel.setBorder(new TitledBorder("Capas ocultas"));
 	hiddenLayers = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
+	hiddenLayers.setToolTipText("Indica el número de capas ocultas que tendrá la red neuronal");
 	hiddenLayersPanel.add(hiddenLayers);
 	spinnerOptionsPanel.add(hiddenLayersPanel);
 	
 	// Hidden neurons
 	hiddenNeuronsPanel = new JPanel();
 	hiddenNeuronsPanel.setLayout(new BoxLayout(hiddenNeuronsPanel, BoxLayout.X_AXIS));
-	hiddenNeuronsPanel.setBorder(new TitledBorder("Neuronas por capa oculta"));
+	hiddenNeuronsPanel.setBorder(new TitledBorder("Neuronas ocultas"));
 	hiddenNeurons = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
+	hiddenNeurons.setToolTipText("Indica el número de neuronas por capa oculta en la red neuronal");
 	hiddenNeuronsPanel.add(hiddenNeurons);
 	spinnerOptionsPanel.add(hiddenNeuronsPanel);
 	
@@ -166,6 +177,7 @@ public class MainWindow extends JFrame {
 	maxiterPanel.setLayout(new BoxLayout(maxiterPanel, BoxLayout.X_AXIS));
 	maxiterPanel.setBorder(new TitledBorder("Iteraciones máximas"));
 	maxiter = new JSpinner(new SpinnerNumberModel(1000, 300, Integer.MAX_VALUE, 100));
+	maxiter.setToolTipText("Indica el número máximo de iteraciones que se pueden dar en la fase de entrenamiento.");
 	maxiterPanel.add(maxiter);
 	spinnerOptionsPanel.add(maxiterPanel);
 	
@@ -174,6 +186,7 @@ public class MainWindow extends JFrame {
 	timesPanel.setLayout(new BoxLayout(timesPanel, BoxLayout.X_AXIS));
 	timesPanel.setBorder(new TitledBorder("Repeticiones"));
 	times = new JSpinner(new SpinnerNumberModel(5, 5, Integer.MAX_VALUE, 1));
+	times.setToolTipText("Indica el número de redes neuronales a entrenar.");
 	timesPanel.add(times);
 	spinnerOptionsPanel.add(timesPanel);
 	
@@ -184,12 +197,8 @@ public class MainWindow extends JFrame {
 	actionPanel = new JPanel();
 	actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.X_AXIS));
 	
-	statusPanel = new JPanel();
-	statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
-	statusPanel.setBorder(new TitledBorder("Estado"));
 	status = new JLabel("No se han cargado los datos aún");
-	statusPanel.add(status);
-	actionPanel.add(statusPanel);
+	actionPanel.add(status);
 	actionPanel.add(Box.createHorizontalGlue());
 	
 	trainButton = new JButton("Entrenar");
@@ -212,6 +221,95 @@ public class MainWindow extends JFrame {
 	outputPanel.add(output);
 	mainWindow.addTab("Salida", outputWindow);
 	
+	// Train button click listener
+	loadTrainData.addMouseListener(new MouseAdapter() {
+	    public void mouseClicked(MouseEvent e) {
+		onLoadTrainButtonClicked();
+	    }
+	});
+
+	// Test button click listener
+	loadTestData.addMouseListener(new MouseAdapter() {
+	    public void mouseClicked(MouseEvent e) {
+		onLoadTestButtonClicked();
+	    }
+	});
+	
+	trainButton.addMouseListener(new MouseAdapter() {
+	    public void mouseClicked(MouseEvent e) {
+		onTrainButtonClicked();
+	    }
+	});
+
+    }
+    
+    public void setStatus(String status) {
+	this.status.setText(status);
+    }
+    
+    public void enableTrain() {
+	this.trainButton.setEnabled(true);
+    }
+    
+    public void disableTrain() {
+	this.trainButton.setEnabled(false);
+    }
+    
+    public double getLearningFactor() {
+	return ((double) learningFactor.getValue() / (double) learningFactor.getMaximum());
+    }
+    
+    public double getInertiaFactor() {
+	return ((double) inertiaFactor.getValue() / (double) inertiaFactor.getMaximum());
+    }
+    
+    public double getMinimumImprovement() {
+	return (double) minimumImprovement.getValue();
+    }
+    
+    public int getHiddenLayers() {
+	return (int) hiddenLayers.getValue();
+    }
+    
+    public int getHiddenNeurons() {
+	return (int) hiddenNeurons.getValue();
+    }
+    
+    public int getMaxiter() {
+	return (int) maxiter.getValue();
+    }
+    
+    public int getTimes() {
+	return (int) times.getValue();
+    }
+    
+    public void clearOutput() {
+	output.setText(null);
+    }
+    
+    public void appendOutput(String text) {
+	output.append(text);
+	output.append("\n");
+    }
+    
+    private void onLoadTrainButtonClicked() {
+	int returnVal = fileChooser.showOpenDialog(this);
+	
+	if(returnVal == JFileChooser.APPROVE_OPTION) {
+	    MainController.setTrainData(fileChooser.getSelectedFile().getAbsolutePath());
+	}
+    }
+    
+    private void onLoadTestButtonClicked() {
+	int returnVal = fileChooser.showOpenDialog(this);
+	
+	if(returnVal == JFileChooser.APPROVE_OPTION) {
+	    MainController.setTestData(fileChooser.getSelectedFile().getAbsolutePath());
+	}
+    }
+    
+    private void onTrainButtonClicked() {
+	MainController.trainData();
     }
     
     private Dictionary<Integer, JLabel> makeDictionaryForASlider(int start, int end, int step) {
