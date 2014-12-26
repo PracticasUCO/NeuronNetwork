@@ -193,6 +193,7 @@ public class MainWindow extends JFrame {
 	actionPanel.add(Box.createHorizontalGlue());
 	
 	trainButton = new JButton("Entrenar");
+	trainButton.setEnabled(false);
 	actionPanel.add(trainButton);
 	configWindow.add(actionPanel);
 	//configWindow.add(Box.createVerticalStrut(10));
@@ -205,6 +206,7 @@ public class MainWindow extends JFrame {
 	outputPanel = new JPanel();
 	outputPanel.setLayout(new BoxLayout(outputPanel, BoxLayout.Y_AXIS));
 	output = new JTextArea("");
+	output.setEditable(false);
 	outputWindow = new JScrollPane(outputPanel);
 	
 	outputPanel.add(output);
