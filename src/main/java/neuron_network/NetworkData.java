@@ -94,6 +94,7 @@ public class NetworkData implements Iterable<ArrayList<Double>> {
      *            The path as string of the data file
      * @throws IOException
      *             it throws a IOException if the file does not exist
+     * @throws IOException if the file has a wrong structure.	
      */
     public void reload_data(String file) throws IOException {
 	File f = new File(file);
@@ -117,6 +118,11 @@ public class NetworkData implements Iterable<ArrayList<Double>> {
 		nSalidas = Integer.valueOf(fields[1]);
 		nPatrons = Integer.valueOf(fields[2]);
 	    }
+	    else {
+		br.close();
+		fr.close();
+		throw new IOException("Header is not valid.");
+	    }
 	}
 
 	for (int j = 0; j < nPatrons; j++) {
@@ -129,7 +135,7 @@ public class NetworkData implements Iterable<ArrayList<Double>> {
 		break;
 	    }
 
-	    if (fields.length > 1) {
+	    if (fields.length == nEntradas + nSalidas) {
 		ArrayList<Double> entradas = new ArrayList<Double>();
 		ArrayList<Double> salidas = new ArrayList<Double>();
 		for (int i = 0; i < fields.length; i++) {
@@ -143,6 +149,11 @@ public class NetworkData implements Iterable<ArrayList<Double>> {
 		}
 		inputs.put(entradas, salidas);
 	    }
+	    else {
+		br.close();
+		fr.close();
+		throw new IOException("Data is corrupted.");
+	    }
 	}
 
 	inputsLength = nEntradas;
@@ -150,6 +161,15 @@ public class NetworkData implements Iterable<ArrayList<Double>> {
 
 	br.close();
 	fr.close();
+    }
+    
+    /**
+     * It removes all data stored
+     */
+    public void clearData() {
+	inputsLength = 0;
+	outputsLength = 0;
+	inputs.clear();
     }
 
     @Override
