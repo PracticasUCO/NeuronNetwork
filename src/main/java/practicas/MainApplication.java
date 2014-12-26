@@ -5,15 +5,18 @@
  */
 package practicas;
 
+import javax.swing.SwingUtilities;
+
 import practicas.controller.MainController;
 
-/**
- *
- * @author gowikel
- */
 public class MainApplication {
     public static void main(String[] args) {
-	MainController.initController();
-	MainController.run();
+	SwingUtilities.invokeLater(new Runnable() {
+	    @Override
+	    public void run() {
+		MainController.initController();
+		MainController.run();
+	    }
+	});
     }
 }
