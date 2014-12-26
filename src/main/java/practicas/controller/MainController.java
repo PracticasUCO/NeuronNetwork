@@ -51,6 +51,7 @@ public class MainController {
 	window.appendOutput("Mejora mínimia: " + window.getMinimumImprovement());
 	window.appendOutput("Capas ocultas: " + window.getHiddenLayers());
 	window.appendOutput("Neuronas por capa oculta: " + window.getHiddenNeurons());
+	window.appendOutput("Neuronas con bias: " + window.getUseBias());
 	window.appendOutput("Iteraciones máximas: " + window.getMaxiter());
 	window.appendOutput("Repeticiones del algoritmo: " + window.getTimes());
 	window.appendOutput("");
@@ -64,7 +65,7 @@ public class MainController {
 	worker.minimumImprovement = window.getMinimumImprovement();
 	worker.trainData = trainData;
 	worker.testData = testData;
-	worker.setup(window.getHiddenLayers(), window.getHiddenNeurons(), trainData.outputs_length());
+	worker.setup(window.getHiddenLayers(), window.getHiddenNeurons(), trainData.outputs_length(), window.getUseBias());
 	window.setStatus("Entrenamiento 1 de " + window.getTimes());
 	window.setProgressBarValue(1);
 	window.disableAllButtons();

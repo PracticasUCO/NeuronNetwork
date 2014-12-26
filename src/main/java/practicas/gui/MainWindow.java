@@ -5,6 +5,8 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -244,7 +246,9 @@ public class MainWindow extends JFrame {
     }
     
     public void setStatus(String status) {
-	this.status.setText(status);
+	Calendar cal = Calendar.getInstance();
+	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+	this.status.setText(sdf.format(cal.getTime()) + " " + status);
     }
     
     public void enableTrain() {
@@ -314,6 +318,10 @@ public class MainWindow extends JFrame {
 	loadTrainData.setEnabled(true);
 	loadTestData.setEnabled(true);
 	trainButton.setEnabled(true);
+    }
+    
+    public boolean getUseBias() {
+	return useBias.isSelected();
     }
     
     private void onLoadTrainButtonClicked() {

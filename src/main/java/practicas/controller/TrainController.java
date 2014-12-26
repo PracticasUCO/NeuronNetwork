@@ -52,7 +52,8 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 	network = new MultilayerPerceptron();
     }
     
-    public void setup(int hiddenLayers, int hiddenNeurons, int outputSize) {
+    public void setup(int hiddenLayers, int hiddenNeurons, int outputSize, boolean useBias) {
+	network.use_bias = useBias;
 	network.setHiddenLayersSize(hiddenLayers, hiddenNeurons);
 	network.setOutputLayerSize(outputSize);
     }
