@@ -32,7 +32,7 @@ class TrainResults {
     public int iteration;
     public double testError;
     public double trainError;
-    
+
     public TrainResults(int iteration, double trainError, double testError) {
 	this.iteration = iteration;
 	this.trainError = trainError;
@@ -46,8 +46,9 @@ class FinalReport {
     public double testMean;
     public double testDesviation;
     public String network;
-    
-    public FinalReport(double trainMean, double trainDesviation, double testMean, double testDesviation, String network) {
+
+    public FinalReport(double trainMean, double trainDesviation,
+	    double testMean, double testDesviation, String network) {
 	this.trainMean = trainMean;
 	this.trainDesviation = trainDesviation;
 	this.testMean = testDesviation;
@@ -64,68 +65,72 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
     public NetworkData testData;
     public int maxiter;
     public double minimumImprovement;
-    
+
     public TrainController() {
 	super();
 	network = new MultilayerPerceptron();
     }
-    
-    public void setup(int hiddenLayers, int hiddenNeurons, int outputSize, boolean useBias) {
+
+    public void setup(int hiddenLayers, int hiddenNeurons, int outputSize,
+	    boolean useBias) {
 	network.use_bias = useBias;
 	network.setHiddenLayersSize(hiddenLayers, hiddenNeurons);
 	network.setOutputLayerSize(outputSize);
     }
-    
+
     @Override
     protected FinalReport doInBackground() throws Exception {
 	ArrayList<Double> trainError = new ArrayList<Double>();
 	ArrayList<Double> testError = new ArrayList<Double>();
-	
-	for(int i = 0; i < times; i++) {
-	    double[] results = network.trainByBackpropagation(trainData, testData, maxiter, minimumImprovement);
+
+	for (int i = 0; i < times; i++) {
+	    double[] results = network.trainByBackpropagation(trainData,
+		    testData, maxiter, minimumImprovement);
 	    trainError.add(results[0]);
 	    testError.add(results[1]);
-	    System.out.println("Acabado entrenamiento " + (i + 1) + " con error en test de " + results[1]);
+	    System.out.println("Acabado entrenamiento " + (i + 1)
+		    + " con error en test de " + results[1]);
 	    publish(new TrainResults(i, results[0], results[1]));
 	}
-	
+
 	double trainMean = 0;
 	double testMean = 0;
 	double trainDesviation = 0;
 	double testDesviation = 0;
-	
-	for(Double error : trainError) {
+
+	for (Double error : trainError) {
 	    trainMean += error;
 	    trainDesviation += Math.pow(error, 2);
 	}
-	
-	for(Double error : testError) {
+
+	for (Double error : testError) {
 	    testMean += error;
 	    testDesviation += Math.pow(error, 2);
 	}
-	
+
 	trainMean /= trainError.size();
 	trainDesviation /= trainError.size();
 	testMean /= testError.size();
 	testDesviation /= testError.size();
-	
+
 	trainDesviation -= Math.pow(trainMean, 2);
 	testDesviation -= Math.pow(testMean, 2);
-	
+
 	trainDesviation = Math.sqrt(trainDesviation);
 	testDesviation = Math.sqrt(testDesviation);
-	
-	if(Double.isNaN(trainDesviation)) {
+
+	if (Double.isNaN(trainDesviation)) {
 	    trainDesviation = 0;
 	}
-	
-	if(Double.isNaN(testDesviation)) {
+
+	if (Double.isNaN(testDesviation)) {
 	    testDesviation = 0;
 	}
-	
-	return new FinalReport(trainMean, trainDesviation, testMean, testDesviation, network.toString());
+
+	return new FinalReport(trainMean, trainDesviation, testMean,
+		testDesviation, network.toString());
     }
-    
+
     @Override
     public void done() {
 	FinalReport report = null;
@@ -135,14 +140,17 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	
-	MainController.processFinalTrain(report.trainMean, report.trainDesviation, report.testMean, report.testDesviation, report.network);
+
+	MainController.processFinalTrain(report.trainMean,
+		report.trainDesviation, report.testMean, report.testDesviation,
+		report.network);
     }
-    
+
     @Override
     public void process(List<TrainResults> results) {
 	TrainResults result = results.get(results.size() - 1);
-	MainController.processIntermidiateTrain(result.iteration, result.trainError, result.testError);
+	MainController.processIntermidiateTrain(result.iteration,
+		result.trainError, result.testError);
     }
 
 }

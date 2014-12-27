@@ -37,7 +37,8 @@ public class NetworkData implements Iterable<ArrayList<Double>> {
     private int inputsLength; // Number of inputs in each patron
     private int outputsLength; // Number of outputs in each patron
     private HashMap<ArrayList<Double>, ArrayList<Double>> inputs; // The inputs
-								  // hash map
+
+    // hash map
 
     /**
      * Basic constructor. It creates a NetworkData without patrons.
@@ -112,7 +113,8 @@ public class NetworkData implements Iterable<ArrayList<Double>> {
      *            The path as string of the data file
      * @throws IOException
      *             it throws a IOException if the file does not exist
-     * @throws IOException if the file has a wrong structure.	
+     * @throws IOException
+     *             if the file has a wrong structure.
      */
     public void reload_data(String file) throws IOException {
 	File f = new File(file);
@@ -135,8 +137,7 @@ public class NetworkData implements Iterable<ArrayList<Double>> {
 		nEntradas = Integer.valueOf(fields[0]);
 		nSalidas = Integer.valueOf(fields[1]);
 		nPatrons = Integer.valueOf(fields[2]);
-	    }
-	    else {
+	    } else {
 		br.close();
 		fr.close();
 		throw new IOException("Header is not valid.");
@@ -166,8 +167,7 @@ public class NetworkData implements Iterable<ArrayList<Double>> {
 
 		}
 		inputs.put(entradas, salidas);
-	    }
-	    else {
+	    } else {
 		br.close();
 		fr.close();
 		throw new IOException("Data is corrupted.");
@@ -180,7 +180,7 @@ public class NetworkData implements Iterable<ArrayList<Double>> {
 	br.close();
 	fr.close();
     }
-    
+
     /**
      * It removes all data stored
      */

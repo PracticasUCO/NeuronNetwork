@@ -500,7 +500,7 @@ public class MultilayerPerceptron {
 	network += "Size of hidden layers: " + getLayerSize(0) + "\n";
 	network += "Size of output layer: " + getLayerSize(-1) + "\n";
 	network += "\n";
-	
+
 	ArrayList<String> labels = new ArrayList<String>();
 
 	for (int i = 0; i < getNumberOfHiddenLayers(); i++) {
@@ -516,7 +516,7 @@ public class MultilayerPerceptron {
 
 	network += "Output layer\n";
 
-	for(int i = 0; i < _outputLayer.size(); i++) {
+	for (int i = 0; i < _outputLayer.size(); i++) {
 	    network += "\t" + _outputLayer.get(i) + i + "\n";
 	}
 
@@ -1044,8 +1044,8 @@ public class MultilayerPerceptron {
 	    for (int j = 0; j < _inputs.size(); j++) {
 		acc += _inputs.get(j) * n.inputs.get(j);
 	    }
-	    
-	    if(use_bias) {
+
+	    if (use_bias) {
 		acc += n.bias;
 	    }
 
@@ -1070,8 +1070,8 @@ public class MultilayerPerceptron {
 
 		    acc += lastNeuron.output * currentNeuron.inputs.get(h);
 		}
-		
-		if(use_bias) {
+
+		if (use_bias) {
 		    acc += currentNeuron.bias;
 		}
 
@@ -1095,8 +1095,8 @@ public class MultilayerPerceptron {
 		Neuron lastNeuron = lastHiddenLayer.get(j);
 		acc += lastNeuron.output * n.inputs.get(j);
 	    }
-	    
-	    if(use_bias) {
+
+	    if (use_bias) {
 		acc += n.bias;
 	    }
 
