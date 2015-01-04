@@ -407,6 +407,58 @@ public class MultilayerPerceptron {
 
 		return mse;
 	}
+	
+	/**
+	 * It returns CCR measure to the given data
+	 * @param data a NetworkData used to test the network
+	 * @param applySoftmax a flag to indicate when apply a softmax to the output
+	 * @return the CCR measure
+	 */
+	public double getCCR(NetworkData data, boolean applySoftmax) {
+		double result = 0;
+		
+		for(ArrayList<Double> input : data) {
+			feed(input);
+			spreadOut();
+			
+			if(applySoftmax) {
+				applySoftmax();
+				applyPrediction();
+			}
+			
+			if(getOutputs().equals(data.get_output(input))) {
+				result++;
+			}
+		}
+		
+		result /= data.patrons_length();
+		
+		return result;
+	}
+	
+	/**
+	 * It puts an 1 to the max value in the outputs and 0 in all rest values 
+	 **/
+	public void applyPrediction() {
+		int bestIndex = Integer.MIN_VALUE;
+		double bestValue = Double.MIN_VALUE;
+		
+		for(int i = 0; i < getOutputLayerSize(); i++) {
+			if(getOutput(i) > bestValue) {
+				bestValue = getOutput(i);
+				bestIndex = i;
+			}
+		}
+		
+		for(int i = 0; i < getOutputLayerSize(); i++) {
+			if(i == bestIndex) {
+				_outputs.set(i, 1D);
+			}
+			else {
+				_outputs.set(i, 0D);
+			}
+		}
+	}
 
 	/**
 	 * It applies a softmax function to the current outputs in the outputs
