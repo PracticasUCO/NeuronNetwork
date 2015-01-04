@@ -374,7 +374,9 @@ public class MainWindow extends JFrame {
 	}
 
 	private void onTrainButtonClicked() {
-		MainController.trainData();
+		if(trainButton.isEnabled()) {
+			MainController.trainData();
+		}
 	}
 
 	private Dictionary<Integer, JLabel> makeDictionaryForASlider(int start,
