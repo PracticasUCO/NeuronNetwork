@@ -23,13 +23,13 @@ import javax.swing.SwingUtilities;
 import practicas.controller.MainController;
 
 public class MainApplication {
-    public static void main(String[] args) {
-	SwingUtilities.invokeLater(new Runnable() {
-	    @Override
-	    public void run() {
-		MainController.initController();
-		MainController.run();
-	    }
-	});
-    }
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				MainController.initController();
+				MainController.run();
+			}
+		});
+	}
 }
