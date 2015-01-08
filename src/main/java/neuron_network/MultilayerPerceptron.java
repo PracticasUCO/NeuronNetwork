@@ -456,6 +456,15 @@ public class MultilayerPerceptron {
 	}
 	
 	/**
+	 * It returns CCR measure to the given data
+	 * @param data a NetworkData used to test the network
+	 * @return the CCR measure
+	 */
+	public double getCCR(NetworkData data) {
+		return getCCR(data, false);
+	}
+	
+	/**
 	 * It puts an 1 to the max value in the outputs and 0 in all rest values 
 	 **/
 	public void applyPrediction() {
