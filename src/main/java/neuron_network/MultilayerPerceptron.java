@@ -999,11 +999,49 @@ public class MultilayerPerceptron {
 			throw new IllegalArgumentException(error);
 		}
 
-		for (int i = 0; i < _outputLayer.size(); i++) {
-			Neuron n = _outputLayer.get(i);
-			n.delta = -(desiredOutput.get(i) - n.output);
-			n.delta *= n.output;
-			n.delta *= (1 - n.output);
+		if(neuronType.equals(neuronType.SIGMOIDE)) {
+			for (int i = 0; i < _outputLayer.size(); i++) {
+				Neuron n = _outputLayer.get(i);
+				if(minimize.equals(errorToMinimize.MSE)) {
+					n.delta = -(desiredOutput.get(i) - n.output);
+					n.delta *= n.output;
+					n.delta *= (1 - n.output);
+				}
+				else {
+					n.delta = -(desiredOutput.get(i) / n.output);
+					n.delta *= n.output;
+					n.delta *= (1 - n.output);
+				}
+			}
+		}
+		else {
+			for(int i = 0; i < _outputLayer.size(); i++) {
+				Neuron n = _outputLayer.get(i);
+				double delta = 0;
+				
+				for(int j = 0; j < _outputLayer.size(); j++) {
+					Neuron next = _outputLayer.get(j);
+					
+					if(minimize.equals(errorToMinimize.MSE)) {
+						delta += (desiredOutput.get(j) - next.output);
+					}
+					else {
+						delta += (desiredOutput.get(j) / next.output);
+					}
+					delta *= n.output;
+					
+					if(i == j) {
+						delta *= (1 - next.output);
+					}
+					else {
+						delta *= (next.output * -1);
+					}
+					
+					delta *= -1;
+				}
+				
+				n.delta = delta;
+			}
 		}
 	}
 
