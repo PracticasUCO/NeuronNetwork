@@ -416,6 +416,18 @@ public class MultilayerPerceptron {
 	}
 	
 	/**
+	 * It returns the mean error of the network with each patron in data. It
+	 * spread out all data, so you don't need to do it before
+	 * 
+	 * @param data
+	 *            a NetworkData with all patrons to be tested
+	 * @return the mean of all MSE of all patrons.
+	 **/
+	public double getMeanSquaredError(NetworkData data) {
+		return getMeanSquaredError(data, false);
+	}
+	
+	/**
 	 * It returns CCR measure to the given data
 	 * @param data a NetworkData used to test the network
 	 * @param applySoftmax a flag to indicate when apply a softmax to the output
@@ -639,7 +651,7 @@ public class MultilayerPerceptron {
 		setRandomInputs();
 
 		for (int i = 0; i < maxiter; i++) {
-			double startError = getMeanSquaredError(trainData, false);
+			double startError = getMeanSquaredError(trainData);
 
 			for (ArrayList<Double> input : trainData) {
 				feed(input);
@@ -647,7 +659,7 @@ public class MultilayerPerceptron {
 				onlineBackpropagation(input, trainData.get_output(input));
 			}
 
-			double endError = getMeanSquaredError(trainData, false);
+			double endError = getMeanSquaredError(trainData);
 
 			trainListener.accept(endError);
 
@@ -656,8 +668,8 @@ public class MultilayerPerceptron {
 			}
 		}
 
-		double trainError = getMeanSquaredError(trainData, false);
-		double testError = getMeanSquaredError(testData, false);
+		double trainError = getMeanSquaredError(trainData);
+		double testError = getMeanSquaredError(testData);
 
 		double[] results = { trainError, testError };
 
