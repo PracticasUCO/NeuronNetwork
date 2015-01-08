@@ -63,6 +63,24 @@ public class MultilayerPerceptron {
 	private ArrayList<Neuron> _outputLayer;
 	private ArrayList<ArrayList<Neuron>> _hiddenLayers;
 	private SecureRandom _randomGenerator;
+	
+	
+	public enum neuronType { SIGMOIDE, SOFTMAX };
+	public enum errorToMinimize { MSE, ENTROPY };
+	
+	/**
+	 * It indicates the neuron type of the network. By default
+	 * it will be SIGMOIDE.
+	 * @see enum neuronType
+	 */
+	public neuronType neuronType;
+	
+	/**
+	 * It indicates what will be try to minimize in the backpropagation
+	 * phase. By default it will be MSE.
+	 * @see errorToMinimize
+	 */
+	public errorToMinimize minimize;
 
 	/**
 	 * Learning factor is a param that modify how much the neuron network will
@@ -102,6 +120,9 @@ public class MultilayerPerceptron {
 		setInertiaValue(0.1);
 
 		checkAndConnectAllLayers();
+		
+		neuronType = neuronType.SIGMOIDE;
+		minimize = errorToMinimize.MSE;
 	}
 
 	/**
@@ -132,6 +153,9 @@ public class MultilayerPerceptron {
 		setInertiaValue(0.1);
 
 		checkAndConnectAllLayers();
+		
+		neuronType = neuronType.SIGMOIDE;
+		minimize = errorToMinimize.MSE;
 	}
 
 	/**
@@ -395,7 +419,7 @@ public class MultilayerPerceptron {
 	 * @param applySoftmax Indicate if softmax will be applied to each input
 	 * @return the mean of all MSE of all patrons.
 	 **/
-	public double getMeanSquaredError(NetworkData data, boolean applySoftmax) {
+	protected double getMeanSquaredError(NetworkData data, boolean applySoftmax) {
 		double mse = 0;
 
 		for (ArrayList<Double> input : data) {
@@ -424,7 +448,12 @@ public class MultilayerPerceptron {
 	 * @return the mean of all MSE of all patrons.
 	 **/
 	public double getMeanSquaredError(NetworkData data) {
-		return getMeanSquaredError(data, false);
+		if(neuronType == neuronType.SIGMOIDE) {
+			return getMeanSquaredError(data, false);
+		}
+		else {
+			return getMeanSquaredError(data, true);
+		}
 	}
 	
 	/**
@@ -433,7 +462,7 @@ public class MultilayerPerceptron {
 	 * @param applySoftmax a flag to indicate when apply a softmax to the output
 	 * @return the CCR measure
 	 */
-	public double getCCR(NetworkData data, boolean applySoftmax) {
+	protected double getCCR(NetworkData data, boolean applySoftmax) {
 		double result = 0;
 		
 		for(ArrayList<Double> input : data) {
@@ -461,7 +490,64 @@ public class MultilayerPerceptron {
 	 * @return the CCR measure
 	 */
 	public double getCCR(NetworkData data) {
-		return getCCR(data, false);
+		if(neuronType == neuronType.SIGMOIDE) {
+			return getCCR(data, false);
+		}
+		else {
+			return getCCR(data, true);
+		}
+	}
+	
+	/**
+	 * It returns the entropy measure to the given data
+	 * @param data a NetworkData used to test the network
+	 * @param applySoftmax indicates if a softmax will need to be applied at the end of the spread out
+	 * @return the entropy of the network
+	 */
+	protected double getEntropy(NetworkData data, boolean applySoftmax) {
+		double entropy = 0;
+		
+		for(ArrayList<Double> input : data) {
+			feed(input);
+			spreadOut();
+			
+			if(applySoftmax) {
+				applySoftmax();
+				applyPrediction();
+			}
+			
+			double value = 0;
+			ArrayList<Double> output = this.getOutputs();
+			ArrayList<Double> expected = data.get_output(input);
+			
+			if(output.size() != expected.size()) {
+				throw new IllegalArgumentException(String.format("Expected output has a length of %s, but network has %s\n.", expected.size(), output.size()));
+			}
+			
+			for(int i = 0; i < output.size(); i++) {
+				value += expected.get(i) * Math.log(output.get(i));
+			}
+			
+			entropy += value;
+		}
+		
+		entropy /= (data.patrons_length() * this.getOutputLayerSize() * -1);
+		
+		return entropy;
+	}
+	
+	/**
+	 * It returns the entropy measure to the given data
+	 * @param data a NetworkData used to test the network
+	 * @return the entropy of the network
+	 */
+	public double getEntropy(NetworkData data) {
+		if(neuronType == neuronType.SIGMOIDE) {
+			return getEntropy(data, false);
+		}
+		else {
+			return getEntropy(data, true);
+		}
 	}
 	
 	/**
