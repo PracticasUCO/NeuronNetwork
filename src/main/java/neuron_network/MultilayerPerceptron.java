@@ -392,14 +392,21 @@ public class MultilayerPerceptron {
 	 * 
 	 * @param data
 	 *            a NetworkData with all patrons to be tested
+	 * @param applySoftmax Indicate if softmax will be applied to each input
 	 * @return the mean of all MSE of all patrons.
 	 **/
-	public double getMeanSquaredError(NetworkData data) {
+	public double getMeanSquaredError(NetworkData data, boolean applySoftmax) {
 		double mse = 0;
 
 		for (ArrayList<Double> input : data) {
 			feed(input);
 			spreadOut();
+			
+			if(applySoftmax) {
+				applySoftmax();
+				applyPrediction();
+			}
+			
 			mse += getMeanSquaredError(data.get_output(input));
 		}
 
@@ -632,7 +639,7 @@ public class MultilayerPerceptron {
 		setRandomInputs();
 
 		for (int i = 0; i < maxiter; i++) {
-			double startError = getMeanSquaredError(trainData);
+			double startError = getMeanSquaredError(trainData, false);
 
 			for (ArrayList<Double> input : trainData) {
 				feed(input);
@@ -640,7 +647,7 @@ public class MultilayerPerceptron {
 				onlineBackpropagation(input, trainData.get_output(input));
 			}
 
-			double endError = getMeanSquaredError(trainData);
+			double endError = getMeanSquaredError(trainData, false);
 
 			trainListener.accept(endError);
 
@@ -649,8 +656,8 @@ public class MultilayerPerceptron {
 			}
 		}
 
-		double trainError = getMeanSquaredError(trainData);
-		double testError = getMeanSquaredError(testData);
+		double trainError = getMeanSquaredError(trainData, false);
+		double testError = getMeanSquaredError(testData, false);
 
 		double[] results = { trainError, testError };
 
