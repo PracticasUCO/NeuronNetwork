@@ -18,6 +18,7 @@
 
 package neuron_network;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -33,6 +34,7 @@ public class BackpropagationTest {
 	private ArrayList<Double> _inputs;
 	private ArrayList<Double> _outputs;
 	private final double SOFT_DELTA = 1e-3;
+	private final double HARD_DELTA = 1e-6;
 
 	@Before
 	public void setUp() {
@@ -193,5 +195,63 @@ public class BackpropagationTest {
 						+ startError + " End error: " + endError,
 				endError < startError);
 	}
+	
+	@Test
+	public void checkTrainByBackpropagationWithSoftmax() throws IOException {
+		URL url = Thread.currentThread().getContextClassLoader()
+				.getResource("neuron_network/xor_2_outputs.dat");
+		NetworkData xor_input = new NetworkData(url.getPath());
+		_network.setOutputLayerSize(xor_input.outputs_length());
+		_network.setHiddenLayersSize(2, 20);
+		_network.use_bias = true;
+		_network.setInertiaValue(0.9);
+		_network.neuronType = _network.neuronType.SOFTMAX;
+		//_network.minimize = _network.minimize.ENTROPY;
+		int times = 750;
+		double withoutImprovement = 0;
+		double badLearnings = 0;
+		double zeroError = 0;
+		
+		for(int t = 0; t < times; t++){
+			_network.setRandomInputs();
+			_network.spreadOut();
 
+			double startMSEError = _network.getMeanSquaredError(xor_input);
+			double startEntropy = _network.getCCR(xor_input);
+
+			for(int i = 0; i < 500; i++) {
+				for(ArrayList<Double> input : xor_input) {
+					_network.feed(input);
+					_network.spreadOut();
+					_network.onlineBackpropagation(input, xor_input.get_output(input));
+				}
+				_network.spreadOut();
+			}
+
+			double endMSEError = _network.getMeanSquaredError(xor_input);
+			double endEntropy = _network.getCCR(xor_input);
+			
+			assertFalse(String.format("Error must be improved. Error at the end: %s, Error at start: %s", endMSEError, startMSEError),
+					endMSEError > startMSEError);
+
+			
+			if(endMSEError == startMSEError) {
+				withoutImprovement++;
+			}
+			
+			if(endMSEError == 0.0) {
+				zeroError++;
+			}
+			
+		}
+		
+		
+		zeroError /= times;
+		withoutImprovement /= times;
+		
+		assertEquals(String.format("Expected an improvement in 95 %% of patrons. Real improvement: %s", 
+				(1-withoutImprovement) * 100), 0, withoutImprovement, 0.05);
+		assertEquals(String.format("Expected that 80 %% of patrons will have a perfect learning but it was %s %%",
+				zeroError * 100), 1d, zeroError, 0.2);
+	}
 }
