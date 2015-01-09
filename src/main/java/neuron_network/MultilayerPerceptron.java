@@ -457,6 +457,53 @@ public class MultilayerPerceptron {
 	}
 	
 	/**
+	 * It returns the entropy of the given data.
+	 * @param data a NetworkData with all patrons to be tested
+	 * @param applySoftmax a flag to indicate if the network must apply a softmax
+	 * @return the entropy of the given data
+	 */
+	protected double getEntropy(NetworkData data, boolean applySoftmax) {
+		double entropy = 0;
+		
+		for(ArrayList<Double> input : data) {
+			double e = 0;
+			ArrayList<Double> expected = data.get_output(input);
+			
+			feed(input);
+			spreadOut();
+			
+			if(applySoftmax) {
+				applySoftmax();
+			}
+			
+			for(int i = 0; i < this.getOutputLayerSize(); i++) {
+				e += expected.get(i) * Math.log(this.getOutput(i)); 
+			}
+			
+			entropy += e;
+		}
+		
+		entropy *= -1;
+		entropy /= (data.patrons_length() * data.outputs_length());
+		
+		return entropy;
+	}
+	
+	/**
+	 * It returns the entropy of the given data.
+	 * @param data a NetworkData with all patrons to be tested
+	 * @return the entropy of the given data
+	 */
+	public double getEntropy(NetworkData data) {
+		if(neuronType.equals(neuronType.SIGMOIDE)) {
+			return getEntropy(data, false);
+		}
+		else {
+			return getEntropy(data, true);
+		}
+	}
+	
+	/**
 	 * It returns CCR measure to the given data
 	 * @param data a NetworkData used to test the network
 	 * @param applySoftmax a flag to indicate when apply a softmax to the output
@@ -479,6 +526,7 @@ public class MultilayerPerceptron {
 			}
 		}
 		
+		
 		result /= data.patrons_length();
 		
 		return result;
@@ -495,58 +543,6 @@ public class MultilayerPerceptron {
 		}
 		else {
 			return getCCR(data, true);
-		}
-	}
-	
-	/**
-	 * It returns the entropy measure to the given data
-	 * @param data a NetworkData used to test the network
-	 * @param applySoftmax indicates if a softmax will need to be applied at the end of the spread out
-	 * @return the entropy of the network
-	 */
-	protected double getEntropy(NetworkData data, boolean applySoftmax) {
-		double entropy = 0;
-		
-		for(ArrayList<Double> input : data) {
-			feed(input);
-			spreadOut();
-			
-			if(applySoftmax) {
-				applySoftmax();
-				applyPrediction();
-			}
-			
-			double value = 0;
-			ArrayList<Double> output = this.getOutputs();
-			ArrayList<Double> expected = data.get_output(input);
-			
-			if(output.size() != expected.size()) {
-				throw new IllegalArgumentException(String.format("Expected output has a length of %s, but network has %s\n.", expected.size(), output.size()));
-			}
-			
-			for(int i = 0; i < output.size(); i++) {
-				value += expected.get(i) * Math.log(output.get(i));
-			}
-			
-			entropy += value;
-		}
-		
-		entropy /= (data.patrons_length() * this.getOutputLayerSize() * -1);
-		
-		return entropy;
-	}
-	
-	/**
-	 * It returns the entropy measure to the given data
-	 * @param data a NetworkData used to test the network
-	 * @return the entropy of the network
-	 */
-	public double getEntropy(NetworkData data) {
-		if(neuronType == neuronType.SIGMOIDE) {
-			return getEntropy(data, false);
-		}
-		else {
-			return getEntropy(data, true);
 		}
 	}
 	
@@ -764,7 +760,7 @@ public class MultilayerPerceptron {
 		}
 
 		double trainError = getMeanSquaredError(trainData);
-		double testError = getMeanSquaredError(testData);
+		double testError = getMeanSquaredError(trainData);
 
 		double[] results = { trainError, testError };
 
@@ -978,6 +974,7 @@ public class MultilayerPerceptron {
 	 *            the output desired by the neuron network
 	 */
 	protected void updateDeltas(ArrayList<Double> desiredOutput) {
+		spreadOut();
 		updateOutputDeltas(desiredOutput);
 		updateHiddenLayersDeltas();
 	}
@@ -1015,32 +1012,38 @@ public class MultilayerPerceptron {
 			}
 		}
 		else {
-			for(int i = 0; i < _outputLayer.size(); i++) {
-				Neuron n = _outputLayer.get(i);
-				double delta = 0;
+			//Aquí hay un fallo que hay que resolver. La red
+			//neuronal no aprende si se usa una softmax
+			ArrayList<Neuron> lastH = _hiddenLayers.get(_hiddenLayers.size() - 1);
+			applySoftmax();
+			//applyPrediction();
+			
+			for(int j = 0; j < _outputLayer.size(); j++) {
+				Neuron neuronaJ = _outputLayer.get(j);
 				
-				for(int j = 0; j < _outputLayer.size(); j++) {
-					Neuron next = _outputLayer.get(j);
+				for(int i = 0; i < _outputLayer.size(); i++) {
+					Neuron neuronaI = _outputLayer.get(i);
+					double delta;
 					
-					if(minimize.equals(errorToMinimize.MSE)) {
-						delta += (desiredOutput.get(j) - next.output);
+					if(minimize.equals(errorToMinimize.MSE)){
+						delta = (desiredOutput.get(i) - this.getOutput(i));
 					}
 					else {
-						delta += (desiredOutput.get(j) / next.output);
+						//delta = (desiredOutput.get(i) / this.getOutput(i));
+						delta = (desiredOutput.get(i) - this.getOutput(i));
 					}
-					delta *= n.output;
+					delta *= this.getOutput(j);
 					
 					if(i == j) {
-						delta *= (1 - next.output);
+						delta *= (1 - this.getOutput(i));
 					}
 					else {
-						delta *= (next.output * -1);
+						delta *= this.getOutput(i);
+						delta *= -1;
 					}
 					
-					delta *= -1;
+					neuronaJ.delta = -1 * delta;
 				}
-				
-				n.delta = delta;
 			}
 		}
 	}
