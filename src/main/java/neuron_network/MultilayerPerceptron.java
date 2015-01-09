@@ -477,7 +477,7 @@ public class MultilayerPerceptron {
 			}
 			
 			for(int i = 0; i < this.getOutputLayerSize(); i++) {
-				e += expected.get(i) * Math.log(this.getOutput(i)); 
+				e += expected.get(i) * Math.log(this.getOutput(i)) / Math.log(2); 
 			}
 			
 			entropy += e;
@@ -1012,8 +1012,6 @@ public class MultilayerPerceptron {
 			}
 		}
 		else {
-			//Aquí hay un fallo que hay que resolver. La red
-			//neuronal no aprende si se usa una softmax
 			ArrayList<Neuron> lastH = _hiddenLayers.get(_hiddenLayers.size() - 1);
 			applySoftmax();
 			//applyPrediction();
@@ -1029,8 +1027,8 @@ public class MultilayerPerceptron {
 						delta = (desiredOutput.get(i) - this.getOutput(i));
 					}
 					else {
-						//delta = (desiredOutput.get(i) / this.getOutput(i));
-						delta = (desiredOutput.get(i) - this.getOutput(i));
+						delta = (desiredOutput.get(i) / this.getOutput(i));
+						//delta = (desiredOutput.get(i) - this.getOutput(i));
 					}
 					delta *= this.getOutput(j);
 					
