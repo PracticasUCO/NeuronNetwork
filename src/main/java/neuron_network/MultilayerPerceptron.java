@@ -782,26 +782,16 @@ public class MultilayerPerceptron {
 	 * It trains the network data with the data given as train_data and check
 	 * it's capacity with the data given as test_data.
 	 * 
-	 * @param trainData
-	 *            data to be used in the training process
-	 * @param testData
-	 *            data to be used in the test process
-	 * @param maxiter
-	 *            max number of iterations in the training process
-	 * @param minimumImprovement
-	 *            minimum improvement to continue the training
-	 * @param trainListener
-	 *            a Consumer that receives current training error
+	 * @param trainData data to be used in the training process
+	 * @param maxiter max number of iterations in the training process
+	 * @param minimumImprovement minimum improvement to continue the training
+	 * @param trainListener a Consumer that receives current training error
 	 * @param offlineBackpropagation indicate if use an online back propagation or not
-	 * @return an double Array with two elements where first element is train
-	 *         error and last element is test error
-	 * @throws IllegalArgumentException
-	 *             if desiredOutput's length in data is not equal to the length
-	 *             of the output layer
+	 * @throws IllegalArgumentException if desiredOutput's length in data is not equal to the length of the output layer
 	 */
-	public double[] trainByBackpropagation(NetworkData trainData,
-			NetworkData testData, int maxiter, double minimumImprovement, 
+	public void trainByBackpropagation(NetworkData trainData, int maxiter, double minimumImprovement, 
 			boolean offlineBackpropagation, Consumer<Double> trainListener) {
+		
 		setRandomInputs();
 
 		for (int i = 0; i < maxiter; i++) {
@@ -835,88 +825,52 @@ public class MultilayerPerceptron {
 			if (Math.abs(endError - startError) < minimumImprovement) {
 				break; // End of training
 			}
-		}
-
-		double trainError = getMeanSquaredError(trainData);
-		double testError = getMeanSquaredError(trainData);
-
-		double[] results = { trainError, testError };
-
-		return results;
+		}	
 	}
 
 	/**
 	 * It trains the network data with the data given as train_data and check
 	 * it's capacity with the data given as test_data.
 	 * 
-	 * @param trainData
-	 *            data to be used in the training process
-	 * @param testData
-	 *            data to be used in the test process
-	 * @param maxiter
-	 *            max number of iterations in the training process
-	 * @param minimumImprovement
-	 *            minimum improvement to continue the training
-	 * @return an double Array with two elements where first element is train
-	 *         error and last element is test error
-	 * @throws IllegalArgumentException
-	 *             if desiredOutput's length in data is not equal to the length
-	 *             of the output layer
+	 * @param trainData data to be used in the training process
+	 * @param maxiter max number of iterations in the training process
+	 * @param minimumImprovement minimum improvement to continue the training
+	 * @throws IllegalArgumentException if desiredOutput's length in data is not equal to the length of the output layer
 	 */
-	public double[] trainByBackpropagation(NetworkData trainData,
-			NetworkData testData, int maxiter, double minimumImprovement) {
-		return trainByBackpropagation(trainData, testData, maxiter,
-				minimumImprovement, false, d -> {
-				});
+	public void trainByBackpropagation(NetworkData trainData, int maxiter, double minimumImprovement) {
+		trainByBackpropagation(trainData, maxiter, minimumImprovement, false, d -> {});
 	}
 	
 	/**
 	 * It trains the network data with the data given as train_data and check
 	 * it's capacity with the data given as test_data.
 	 * 
-	 * @param trainData
-	 *            data to be used in the training process
-	 * @param testData
-	 *            data to be used in the test process
-	 * @param maxiter
-	 *            max number of iterations in the training process
-	 * @param minimumImprovement
-	 *            minimum improvement to continue the training
+	 * @param trainData data to be used in the training process
+	 * @param testData data to be used in the test process
+	 * @param maxiter max number of iterations in the training process
+	 * @param minimumImprovement minimum improvement to continue the training
 	 * @param offlineBackpropagation if true it uses an offline back propagation otherwise it will use an online back propagation
-	 * @return an double Array with two elements where first element is train
-	 *         error and last element is test error
-	 * @throws IllegalArgumentException
-	 *             if desiredOutput's length in data is not equal to the length
-	 *             of the output layer
+	 * @return an double Array with two elements where first element is train error and last element is test error
+	 * @throws IllegalArgumentException if desiredOutput's length in data is not equal to the length of the output layer
 	 */
-	public double[] trainByBackpropagation(NetworkData trainData, NetworkData testData, int maxiter,
-			double minimumImprovement, boolean offlineBackpropagation) {
-		return trainByBackpropagation(trainData, testData, maxiter, minimumImprovement, offlineBackpropagation, d -> {});
+	public void trainByBackpropagation(NetworkData trainData, int maxiter, double minimumImprovement, boolean offlineBackpropagation) {
+		trainByBackpropagation(trainData, maxiter, minimumImprovement, offlineBackpropagation, d -> {});
 	}
 	
 	/**
 	 * It trains the network data with the data given as train_data and check
 	 * it's capacity with the data given as test_data.
 	 * 
-	 * @param trainData
-	 *            data to be used in the training process
-	 * @param testData
-	 *            data to be used in the test process
-	 * @param maxiter
-	 *            max number of iterations in the training process
-	 * @param minimumImprovement
-	 *            minimum improvement to continue the training
-	 * @param trainListener
-	 *            a Consumer that receives current training error
-	 * @return an double Array with two elements where first element is train
-	 *         error and last element is test error
-	 * @throws IllegalArgumentException
-	 *             if desiredOutput's length in data is not equal to the length
-	 *             of the output layer
+	 * @param trainData data to be used in the training process
+	 * @param testData data to be used in the test process
+	 * @param maxiter max number of iterations in the training process
+	 * @param minimumImprovement minimum improvement to continue the training
+	 * @param trainListener a Consumer that receives current training error
+	 * @return an double Array with two elements where first element is train error and last element is test error
+	 * @throws IllegalArgumentException if desiredOutput's length in data is not equal to the length of the output layer
 	 */
-	public double[] trainByBackpropagation(NetworkData trainData, NetworkData testData, int maxiter, 
-			double minimumImprovement, Consumer<Double> trainListener) {
-		return trainByBackpropagation(trainData, testData, maxiter, minimumImprovement, false, trainListener);
+	public void trainByBackpropagation(NetworkData trainData, int maxiter, double minimumImprovement, Consumer<Double> trainListener) {
+		trainByBackpropagation(trainData, maxiter, minimumImprovement, false, trainListener);
 	}
 
 	/**
