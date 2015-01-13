@@ -301,7 +301,7 @@ public class BackpropagationTest {
 	}
 	
 	@Test
-	public void checkSimpleOfflineBackpropagation() throws IOException {
+	public void checkOfflineBackpropagation() throws IOException {
 		URL url = Thread.currentThread().getContextClassLoader()
 				.getResource("neuron_network/xor.dat");
 		NetworkData xor_input = new NetworkData(url.getPath());
