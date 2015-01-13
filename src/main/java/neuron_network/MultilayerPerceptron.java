@@ -806,11 +806,7 @@ public class MultilayerPerceptron {
 		for (int i = 0; i < maxiter; i++) {
 			double startError = getMeanSquaredError(trainData);
 
-			for (ArrayList<Double> input : trainData) {
-				feed(input);
-				spreadOut();
-				onlineBackpropagation(input, trainData.get_output(input));
-			}
+			offlineBackpropagation(trainData);
 
 			double endError = getMeanSquaredError(trainData);
 
