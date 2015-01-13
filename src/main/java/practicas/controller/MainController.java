@@ -21,6 +21,7 @@ package practicas.controller;
 import java.io.IOException;
 
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import neuron_network.NetworkData;
 import practicas.gui.MainWindow;
