@@ -130,12 +130,9 @@ public class MultilayerPerceptron {
 	 * layers, with the specified number of neurons in each hidden layer and the
 	 * specified number of output neurons in the output layer.
 	 * 
-	 * @param hidden_layers
-	 *            the number of hidden layers
-	 * @param hidden_neurons
-	 *            the number of hidden neurons in each hidden_layer
-	 * @param output_neurons
-	 *            the number of output neurons in the output layer
+	 * @param hidden_layers the number of hidden layers
+	 * @param hidden_neurons the number of hidden neurons in each hidden_layer
+	 * @param output_neurons the number of output neurons in the output layer
 	 **/
 	public MultilayerPerceptron(int hidden_layers, int hidden_neurons,
 			int output_neurons) {
@@ -163,10 +160,8 @@ public class MultilayerPerceptron {
 	 * Also it add n_neurons in each layer. It resets all layers, so saved data
 	 * will be deleted
 	 * 
-	 * @param n_hidden_layers
-	 *            The number of hidden layers to be sets
-	 * @param n_neurons
-	 *            The number of neurons in each hidden layer.
+	 * @param n_hidden_layers the number of hidden layers to be sets
+	 * @param n_neurons the number of neurons in each hidden layer.
 	 **/
 	public void setHiddenLayersSize(int n_hidden_layers, int n_neurons) {
 		_hiddenLayers.clear();
@@ -191,8 +186,7 @@ public class MultilayerPerceptron {
 	 * It feeds the network with the inputs given. You can use without problems
 	 * the inputs array because it won't affect to the neuron network.
 	 * 
-	 * @param inputs
-	 *            the list of inputs to the neuron network
+	 * @param inputs the list of inputs to the neuron network
 	 **/
 	public void feed(ArrayList<Double> inputs) {
 		_inputs = (ArrayList<Double>) inputs.clone();
@@ -212,10 +206,8 @@ public class MultilayerPerceptron {
 	 * It sets the value of the learning factor. This value must be a double
 	 * between 0 and 1 otherwise will throw a InvalidArgumentException
 	 * 
-	 * @param learning_value
-	 *            the value of the learning param
-	 * @throws IllegalArgumentException
-	 *             if the learning_value is not between 0 and 1
+	 * @param learning_value the value of the learning param
+	 * @throws IllegalArgumentException if the learning_value is not between 0 and 1
 	 **/
 	public void setLearningFactor(double learning_value) {
 		if ((learning_value < 0) || (learning_value > 1)) {
@@ -240,10 +232,8 @@ public class MultilayerPerceptron {
 	 * It sets the value of the inertia. This value must be a double between 0
 	 * and 1 otherwise will throw a IllegalArgumentException
 	 * 
-	 * @param inertia_value
-	 *            the new inertia value of the neuron network
-	 * @throws IllegalArgumentException
-	 *             if the inertia is not between 0 and 1
+	 * @param inertia_value the new inertia value of the neuron network
+	 * @throws IllegalArgumentException if the inertia is not between 0 and 1
 	 **/
 	public void setInertiaValue(double inertia_value) {
 		if ((inertia_value < 0) || (inertia_value > 1)) {
@@ -287,14 +277,9 @@ public class MultilayerPerceptron {
 	 * inputs given must have the same length than the inputs of the neuron.
 	 * Otherwise this method will not make anything.
 	 * 
-	 * @param layer_index
-	 *            the index of the hidden layer to set the inputs or a negative
-	 *            value if it is the output layer
-	 * @param neuron_index
-	 *            the index of the neuron inside the layer where to set the
-	 *            inputs
-	 * @param inputs
-	 *            the inputs to set
+	 * @param layer_index the index of the hidden layer to set the inputs or a negative value if it is the output layer
+	 * @param neuron_index the index of the neuron inside the layer where to set the inputs
+	 * @param inputs the inputs to set
 	 * @return a true value if the values were set or false otherwise.
 	 **/
 	public boolean setNeuronInputs(int layer_index, int neuron_index,
@@ -312,11 +297,8 @@ public class MultilayerPerceptron {
 	/**
 	 * It returns the inputs of the specified neuron in the specified layer.
 	 * 
-	 * @param layer_index
-	 *            the index of the layer where the neuron is of a negative value
-	 *            to search in the output layer
-	 * @param neuron_index
-	 *            the index of the neuron inside the layer
+	 * @param layer_index the index of the layer where the neuron is of a negative value to search in the output layer
+	 * @param neuron_index the index of the neuron inside the layer
 	 * @return the array with the inputs of the neuron.
 	 **/
 	public ArrayList<Double> getNeuronInputs(int layer_index, int neuron_index) {
@@ -327,11 +309,8 @@ public class MultilayerPerceptron {
 	/**
 	 * It returns the size of the inputs in the specified neuron.
 	 * 
-	 * @param layer_index
-	 *            the index where the neuron is or a negative index to seach in
-	 *            the output layer
-	 * @param neuron_index
-	 *            the index of the neuron inside the layer.
+	 * @param layer_index the index where the neuron is or a negative index to seach in the output layer
+	 * @param neuron_index the index of the neuron inside the layer.
 	 * @return the size of the inputs in the neuron
 	 **/
 	public int getNeuronInputsSize(int layer_index, int neuron_index) {
@@ -343,13 +322,9 @@ public class MultilayerPerceptron {
 	/**
 	 * It sets the bias on the specified neuron
 	 * 
-	 * @param layer_index
-	 *            the index where the neuron is or a negative index to search in
-	 *            the output layer
-	 * @param neuron_index
-	 *            the index of the neuron inside the layer
-	 * @param bias
-	 *            the bias value to be set.
+	 * @param layer_index the index where the neuron is or a negative index to search in the output layer
+	 * @param neuron_index the index of the neuron inside the layer
+	 * @param bias the bias value to be set.
 	 **/
 	public void setBias(int layer_index, int neuron_index, double bias) {
 		Neuron selectedNeuron = getNeuron(layer_index, neuron_index);
@@ -359,11 +334,8 @@ public class MultilayerPerceptron {
 	/**
 	 * It returns the bias of the specified neuron
 	 * 
-	 * @param layer_index
-	 *            the index where the neuron is or a negative index to search in
-	 *            the output layer
-	 * @param neuron_index
-	 *            the index of the neuron inside the layer
+	 * @param layer_index the index where the neuron is or a negative index to search in the output layer
+	 * @param neuron_index the index of the neuron inside the layer
 	 * @return the bias value of the specified neuron
 	 **/
 	public double getBias(int layer_index, int neuron_index) {
@@ -393,8 +365,7 @@ public class MultilayerPerceptron {
 	 * It returns the error of the current network's output if the desired
 	 * output is desired
 	 * 
-	 * @param desired
-	 *            the desired output for the neuron network
+	 * @param desired the desired output for the neuron network
 	 * @return the MSE of the current output
 	 **/
 	public double getMeanSquaredError(ArrayList<Double> desired) {
@@ -414,8 +385,7 @@ public class MultilayerPerceptron {
 	 * It returns the mean error of the network with each patron in data. It
 	 * spread out all data, so you don't need to do it before
 	 * 
-	 * @param data
-	 *            a NetworkData with all patrons to be tested
+	 * @param data a NetworkData with all patrons to be tested
 	 * @param applySoftmax Indicate if softmax will be applied to each input
 	 * @return the mean of all MSE of all patrons.
 	 **/
@@ -443,8 +413,7 @@ public class MultilayerPerceptron {
 	 * It returns the mean error of the network with each patron in data. It
 	 * spread out all data, so you don't need to do it before
 	 * 
-	 * @param data
-	 *            a NetworkData with all patrons to be tested
+	 * @param data a NetworkData with all patrons to be tested
 	 * @return the mean of all MSE of all patrons.
 	 **/
 	public double getMeanSquaredError(NetworkData data) {
@@ -626,8 +595,7 @@ public class MultilayerPerceptron {
 	 * It retrives the number of neurons in the specified layer. You can use -1
 	 * as index to retrieve the number of neurons in the output layer
 	 * 
-	 * @param layer_index
-	 *            the index of the layer to select.
+	 * @param layer_index the index of the layer to select.
 	 * @return the size of the layer
 	 **/
 	public int getLayerSize(int layer_index) {
@@ -641,8 +609,7 @@ public class MultilayerPerceptron {
 	/**
 	 * It returns the outputs at th specified index
 	 * 
-	 * @param index
-	 *            the index of the output to be retrieved
+	 * @param index the index of the output to be retrieved
 	 * @return the output value at index in the outputs layer
 	 **/
 	public double getOutput(int index) {
@@ -701,13 +668,9 @@ public class MultilayerPerceptron {
 	 * forget to call to spreadOut
 	 * </p>
 	 * 
-	 * @param input
-	 *            the input to the neuron network
-	 * @param desiredOutput
-	 *            the output desired for the given input
-	 * @throws IllegalArgumentException
-	 *             desiredOutput length is not equal to the length of the output
-	 *             layer
+	 * @param input the input to the neuron network
+	 * @param desiredOutput the output desired for the given input
+	 * @throws IllegalArgumentException desiredOutput length is not equal to the length of the output layer
 	 */
 	public void onlineBackpropagation(ArrayList<Double> input,
 			ArrayList<Double> desiredOutput) {
@@ -735,9 +698,7 @@ public class MultilayerPerceptron {
 	 * </p>
 	 * 
 	 * @param data the data used to improve network's neurons
-	 * @throws IllegalArgumentException
-	 *             desiredOutput length is not equal to the length of the output
-	 *             layer
+	 * @throws IllegalArgumentException desiredOutput length is not equal to the length of the output layer
 	 */
 	public void onlineBackpropagation(NetworkData data) {
 		for(ArrayList<Double> input : data) {
@@ -876,8 +837,7 @@ public class MultilayerPerceptron {
 	/**
 	 * It sets at the end of the output layer the specified value
 	 * 
-	 * @param value
-	 *            the value to be set
+	 * @param value the value to be set
 	 **/
 	protected void addOutput(double value) {
 		_outputs.add(value);
@@ -886,10 +846,8 @@ public class MultilayerPerceptron {
 	/**
 	 * It sets at the specified index of the output layer the specified value
 	 * 
-	 * @param index
-	 *            the index of the value in the output layer
-	 * @param value
-	 *            the value to be set
+	 * @param index the index of the value in the output layer
+	 * @param value the value to be set
 	 **/
 	protected void setOutput(int index, double value) {
 		_outputs.set(index, value);
@@ -906,8 +864,7 @@ public class MultilayerPerceptron {
 	 * It initializes the number the outputs in the output layer. It also reset
 	 * the layer.
 	 * 
-	 * @param n_neurons
-	 *            the number of neurons to set in the output layer
+	 * @param n_neurons the number of neurons to set in the output layer
 	 **/
 	public void setOutputLayerSize(int n_neurons) {
 		_outputLayer.clear();
@@ -1027,11 +984,8 @@ public class MultilayerPerceptron {
 	/**
 	 * It selects a neuron and return its reference.
 	 * 
-	 * @param layer_index
-	 *            the index of the hidden layer where is the neuron or a
-	 *            negative index to select it from output layer
-	 * @param neuron_index
-	 *            the index inside the layer where is the neuron.
+	 * @param layer_index the index of the hidden layer where is the neuron or a negative index to select it from output layer
+	 * @param neuron_index the index inside the layer where is the neuron.
 	 * @return the neuron specified
 	 **/
 	protected Neuron getNeuron(int layer_index, int neuron_index) {
@@ -1051,8 +1005,7 @@ public class MultilayerPerceptron {
 	 * change that must do the neuron to each input in order to improve his
 	 * output
 	 * 
-	 * @param desiredOutput
-	 *            the output desired by the neuron network
+	 * @param desiredOutput the output desired by the neuron network
 	 */
 	protected void updateDeltas(ArrayList<Double> desiredOutput) {
 		spreadOut();
@@ -1063,10 +1016,8 @@ public class MultilayerPerceptron {
 	/**
 	 * It will update the deltas of the output layer.
 	 * 
-	 * @param desiredOutput
-	 *            the output desired by the neuron network
-	 * @throws IllegalArgumentException
-	 *             if desiredOutput's size is not equal to the output layer size
+	 * @param desiredOutput the output desired by the neuron network
+	 * @throws IllegalArgumentException if desiredOutput's size is not equal to the output layer size
 	 */
 	private void updateOutputDeltas(ArrayList<Double> desiredOutput) {
 		if (desiredOutput.size() != _outputLayer.size()) {
