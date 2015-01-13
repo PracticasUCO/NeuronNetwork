@@ -330,4 +330,37 @@ public class BackpropagationTest {
 		}
 		
 	}
+	
+	@Test
+	public void checkSimpleOfflineBackpropagation() throws IOException {
+		URL url = Thread.currentThread().getContextClassLoader()
+				.getResource("neuron_network/simple_data.data");
+		NetworkData inputData = new NetworkData(url.getPath());
+		_network.setOutputLayerSize(inputData.outputs_length());
+		_network.setHiddenLayersSize(2, 20);
+		_network.use_bias = true;
+		_network.setInertiaValue(0.9);
+		
+		int times = 300;
+		
+		for(int t = 0; t < times; t++) {
+			_network.setRandomInputs();
+			_network.spreadOut();
+
+			for(int i = 0; i < times * 15; i++) {
+				double startError = _network.getMeanSquaredError(inputData);
+				_network.offlineBackpropagation(inputData);
+				_network.spreadOut();
+				double endError = _network.getMeanSquaredError(inputData);
+
+				assertTrue(String.format("Error must be improved in each iteration. End error: %s - Start error: %s",
+						endError, startError), endError < startError);
+			}
+			
+			double finalError = _network.getMeanSquaredError(inputData);
+			
+			assertEquals(String.format("Final error must be near to zero but was %s",
+					finalError), 0, finalError, SOFT_DELTA);
+		}
+	}
 }
