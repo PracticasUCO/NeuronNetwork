@@ -18,7 +18,6 @@
 
 package practicas.controller;
 
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import neuron_network.MultilayerPerceptron;
