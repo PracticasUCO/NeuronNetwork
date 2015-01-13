@@ -61,16 +61,17 @@ public class MainController {
 	public static void trainData() {
 		window.clearOutput();
 		window.appendOutput("Configurando red con los siguientes parametros: ");
-		window.appendOutput("Factor de aprendizaje: "
-				+ window.getLearningFactor());
-		window.appendOutput("Factor de inercia: " + window.getInertiaFactor());
-		window.appendOutput("Mejora mínimia: " + window.getMinimumImprovement());
-		window.appendOutput("Capas ocultas: " + window.getHiddenLayers());
-		window.appendOutput("Neuronas por capa oculta: "
-				+ window.getHiddenNeurons());
-		window.appendOutput("Neuronas con bias: " + window.getUseBias());
-		window.appendOutput("Iteraciones máximas: " + window.getMaxiter());
-		window.appendOutput("Repeticiones del algoritmo: " + window.getTimes());
+		window.appendOutput(String.format("Tipo de retropropagación: %s", window.getBackpropagationType().toUpperCase()));
+		window.appendOutput(String.format("Tipo de neuronas: %s", window.getNeuronsType().toUpperCase()));
+		window.appendOutput(String.format("Funcion a optimizar: %s", window.getFunctionToOptimize().toUpperCase()));
+		window.appendOutput(String.format("Factor de aprendizaje: %s", window.getLearningFactor()));
+		window.appendOutput(String.format("Factor de inercia: %s", window.getInertiaFactor()));
+		window.appendOutput(String.format("Mejora mínimia: %s", window.getMinimumImprovement()));
+		window.appendOutput(String.format("Capas ocultas: %s", window.getHiddenLayers()));
+		window.appendOutput(String.format("Neuronas por capa oculta: %s", window.getHiddenNeurons()));
+		window.appendOutput(String.format("Neuronas con bias: %s", window.getUseBias()));
+		window.appendOutput(String.format("Iteraciones máximas: %s", window.getMaxiter()));
+		window.appendOutput(String.format("Repeticiones del algoritmo: %s", window.getTimes()));
 		window.appendOutput("");
 
 		window.setProgressBarMaximumValue(window.getTimes() + 2);
