@@ -805,8 +805,15 @@ public class MultilayerPerceptron {
 		setRandomInputs();
 
 		for (int i = 0; i < maxiter; i++) {
-			double startError = getMeanSquaredError(trainData);
+			double startError;
 
+			if(minimize.equals(errorToMinimize.MSE)){
+				startError = getMeanSquaredError(trainData);
+			}
+			else {
+				startError = getEntropy(trainData);
+			}
+			
 			if(offlineBackpropagation) {
 				offlineBackpropagation(trainData);
 			}
@@ -814,7 +821,14 @@ public class MultilayerPerceptron {
 				onlineBackpropagation(trainData);
 			}
 
-			double endError = getMeanSquaredError(trainData);
+			double endError;
+			
+			if(minimize.equals(errorToMinimize.MSE)){
+				endError = getMeanSquaredError(trainData);
+			}
+			else {
+				endError = getEntropy(trainData);
+			}
 
 			trainListener.accept(endError);
 
