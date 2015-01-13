@@ -855,6 +855,55 @@ public class MultilayerPerceptron {
 				minimumImprovement, false, d -> {
 				});
 	}
+	
+	/**
+	 * It trains the network data with the data given as train_data and check
+	 * it's capacity with the data given as test_data.
+	 * 
+	 * @param trainData
+	 *            data to be used in the training process
+	 * @param testData
+	 *            data to be used in the test process
+	 * @param maxiter
+	 *            max number of iterations in the training process
+	 * @param minimumImprovement
+	 *            minimum improvement to continue the training
+	 * @param offlineBackpropagation if true it uses an offline back propagation otherwise it will use an online back propagation
+	 * @return an double Array with two elements where first element is train
+	 *         error and last element is test error
+	 * @throws IllegalArgumentException
+	 *             if desiredOutput's length in data is not equal to the length
+	 *             of the output layer
+	 */
+	public double[] trainByBackpropagation(NetworkData trainData, NetworkData testData, int maxiter,
+			double minimumImprovement, boolean offlineBackpropagation) {
+		return trainByBackpropagation(trainData, testData, maxiter, minimumImprovement, offlineBackpropagation, d -> {});
+	}
+	
+	/**
+	 * It trains the network data with the data given as train_data and check
+	 * it's capacity with the data given as test_data.
+	 * 
+	 * @param trainData
+	 *            data to be used in the training process
+	 * @param testData
+	 *            data to be used in the test process
+	 * @param maxiter
+	 *            max number of iterations in the training process
+	 * @param minimumImprovement
+	 *            minimum improvement to continue the training
+	 * @param trainListener
+	 *            a Consumer that receives current training error
+	 * @return an double Array with two elements where first element is train
+	 *         error and last element is test error
+	 * @throws IllegalArgumentException
+	 *             if desiredOutput's length in data is not equal to the length
+	 *             of the output layer
+	 */
+	public double[] trainByBackpropagation(NetworkData trainData, NetworkData testData, int maxiter, 
+			double minimumImprovement, Consumer<Double> trainListener) {
+		return trainByBackpropagation(trainData, testData, maxiter, minimumImprovement, false, trainListener);
+	}
 
 	/**
 	 * It sets at the end of the output layer the specified value
