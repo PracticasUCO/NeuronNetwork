@@ -178,22 +178,17 @@ public class BackpropagationTest {
 		_network.use_bias = true;
 
 		double startError = _network.getMeanSquaredError(xor_input);
-
-		double[] results = _network.trainByBackpropagation(xor_input,
-				xor_input, 1000, 1e-5);
+		
+		_network.trainByBackpropagation(xor_input, 1000, 1e-5);
+		double trainError = _network.getMeanSquaredError(xor_input);
+		double testError = _network.getMeanSquaredError(xor_input);
 
 		double endError = _network.getMeanSquaredError(xor_input);
 
-		assertEquals(
-				"trainByBackpropagation must return an array with two elements. It returns "
-						+ results.length + " elements", 2, results.length);
-		assertTrue("train error must be <= than test error. train error: "
-				+ results[0] + " test error: " + results[1],
-				results[0] <= results[1]);
-		assertTrue(
-				"network error must be lower after the training. Starting error: "
-						+ startError + " End error: " + endError,
-				endError < startError);
+		assertTrue(String.format("train error must be <= than test error. Train error: <%s>  Test error: <%s>",
+				trainError, testError), trainError <= testError);
+		assertTrue(String.format("network error must be lower after the training. Starting error: <%s> End error: <%s>",
+				startError, endError), endError < startError);
 	}
 	
 	@Test
