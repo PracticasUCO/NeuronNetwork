@@ -148,9 +148,10 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 
 	@Override
 	public void process(List<TrainResults> results) {
-		TrainResults result = results.get(results.size() - 1);
-		MainController.processIntermidiateTrain(result.iteration,
-				result.trainError, result.testError);
+		for(TrainResults result : results) {
+			MainController.processIntermidiateTrain(result.iteration,
+					result.trainError, result.testError);
+		}
 	}
 
 }
