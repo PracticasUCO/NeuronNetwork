@@ -36,10 +36,9 @@ public class MainController {
 		System.out.println("Leyendo " + path + " como datos de entrenamiento");
 
 		try {
-			trainData.reload_data(path);
+			trainData = new NetworkData(path);
 		} catch (IOException e) {
 			System.err.println("Error al cargar el archivo.");
-			trainData.clearData();
 		}
 
 		checkData();
@@ -49,10 +48,9 @@ public class MainController {
 		System.out.println("Leyendo " + path + " como datos de test");
 
 		try {
-			testData.reload_data(path);
+			testData = new NetworkData(path);
 		} catch (IOException e) {
 			System.err.println("Error al cargar el archivo.");
-			testData.clearData();
 		}
 
 		checkData();
@@ -86,6 +84,8 @@ public class MainController {
 		worker.learningFactor = window.getLearningFactor();
 		worker.inertiaValue = window.getInertiaFactor();
 		worker.useBias = window.getUseBias();
+		worker.hiddenLayers = window.getHiddenLayers();
+		worker.hiddenNeurons = window.getHiddenNeurons();
 		
 		if(window.getNeuronsType().equalsIgnoreCase("SIGMOIDE")) {
 			worker.neuronType = neuronType.SIGMOIDE;
@@ -108,7 +108,6 @@ public class MainController {
 			worker.offlineBackpropagation = true;
 		}
 		
-		worker.setup(window.getHiddenLayers(), window.getHiddenNeurons());
 		window.setStatus("Entrenamiento 1 de " + window.getTimes());
 		window.setProgressBarValue(1);
 		window.disableAllButtons();

@@ -70,6 +70,8 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 	public double learningFactor;
 	public double inertiaValue;
 	public boolean useBias;
+	public int hiddenLayers;
+	public int hiddenNeurons;
 
 	public TrainController() {
 		super();
@@ -80,7 +82,7 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 		inertiaValue = network.getInertiaValue();
 	}
 
-	public void setup(int hiddenLayers, int hiddenNeurons) {
+	public void setup() {
 		network.use_bias = this.useBias;
 		network.setHiddenLayersSize(hiddenLayers, hiddenNeurons);
 		network.setOutputLayerSize(trainData.outputs_length());
@@ -88,12 +90,15 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 		network.minimize = this.errorToMinimize;
 		network.setInertiaValue(inertiaValue);
 		network.setLearningFactor(learningFactor);
+		network.spreadOut();
 	}
 
 	@Override
 	protected FinalReport doInBackground() throws Exception {
 		ArrayList<Double> trainError = new ArrayList<Double>();
 		ArrayList<Double> testError = new ArrayList<Double>();
+		
+		setup();
 		
 		System.out.println("Configurada red neuronal con: ");
 		System.out.println(String.format("Numero de capas ocultas: %s - Neuronas por capa oculta: %s",
