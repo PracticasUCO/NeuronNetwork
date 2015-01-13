@@ -134,8 +134,7 @@ public class MultilayerPerceptron {
 	 * @param hidden_neurons the number of hidden neurons in each hidden_layer
 	 * @param output_neurons the number of output neurons in the output layer
 	 **/
-	public MultilayerPerceptron(int hidden_layers, int hidden_neurons,
-			int output_neurons) {
+	public MultilayerPerceptron(int hidden_layers, int hidden_neurons, int output_neurons) {
 		_inputs = new ArrayList<Double>();
 		_outputs = new ArrayList<Double>();
 		_outputLayer = new ArrayList<Neuron>();
@@ -282,8 +281,7 @@ public class MultilayerPerceptron {
 	 * @param inputs the inputs to set
 	 * @return a true value if the values were set or false otherwise.
 	 **/
-	public boolean setNeuronInputs(int layer_index, int neuron_index,
-			ArrayList<Double> inputs) {
+	public boolean setNeuronInputs(int layer_index, int neuron_index, ArrayList<Double> inputs) {
 		Neuron selectedNeuron = getNeuron(layer_index, neuron_index);
 
 		if (selectedNeuron.inputs.size() == inputs.size()) {
@@ -672,8 +670,7 @@ public class MultilayerPerceptron {
 	 * @param desiredOutput the output desired for the given input
 	 * @throws IllegalArgumentException desiredOutput length is not equal to the length of the output layer
 	 */
-	public void onlineBackpropagation(ArrayList<Double> input,
-			ArrayList<Double> desiredOutput) {
+	public void onlineBackpropagation(ArrayList<Double> input, ArrayList<Double> desiredOutput) {
 		feed(input);
 		spreadOut();
 		
