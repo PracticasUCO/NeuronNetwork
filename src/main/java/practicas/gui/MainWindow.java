@@ -45,6 +45,7 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JProgressBar;
 import javax.swing.JFileChooser;
+import javax.swing.JComboBox;
 
 import practicas.controller.MainController;
 
@@ -56,6 +57,13 @@ public class MainWindow extends JFrame {
 	private JPanel loadAreaPanel;
 	private JButton loadTrainData;
 	private JButton loadTestData;
+	private JPanel neuronsTypePanel;
+	private JPanel functionToOptimizePanel;
+	private JPanel backpropagationTypePanel;
+	private JPanel comboOptionsPanel;
+	private JComboBox<String> neuronsType;
+	private JComboBox<String> functionToOptimize;
+	private JComboBox<String> backpropagationType;
 	private JCheckBox useBias;
 	private JPanel learningFactorPanel;
 	private JSlider learningFactor;
@@ -94,12 +102,23 @@ public class MainWindow extends JFrame {
 		// Main config window
 		configWindow = new JPanel();
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize((int) (screenSize.getWidth() / 2.5),
-				(int) (screenSize.getHeight() / 1.9));
+		
+		double widthDivider = 1.8;
+		double heigthDivider = 1.8;
+		
+		this.setSize((int) (screenSize.getWidth() / widthDivider),
+				(int) (screenSize.getHeight() / heigthDivider));
+		
+		System.out.println(String.format("Screen size: %sx%s", screenSize.getWidth(), screenSize.getHeight()));
+		System.out.println(String.format("App's size: %dx%d", 
+				(int) (screenSize.getWidth()/widthDivider), (int) (screenSize.getHeight()/heigthDivider)));
+		
 		// this.add(window);
 		mainWindow.addTab("Configuración", configWindow);
 		configWindow.setLayout(new BoxLayout(configWindow, BoxLayout.Y_AXIS));
 		this.setTitle("Multilayer Perceptron");
+		
+		this.setMinimumSize(new Dimension(758, 426));
 
 		// Load panel
 		loadAreaPanel = new JPanel();
@@ -114,14 +133,50 @@ public class MainWindow extends JFrame {
 		loadAreaPanel.add(useBias);
 		loadAreaPanel.setBounds(5, 5, 30, 30);
 		configWindow.add(loadAreaPanel);
-		configWindow.add(Box.createVerticalStrut(10));
+		configWindow.add(Box.createVerticalStrut(5));
 
+		//Como box options panel
+		comboOptionsPanel = new JPanel();
+		comboOptionsPanel.setLayout(new BoxLayout(comboOptionsPanel, BoxLayout.X_AXIS));
+		
+		backpropagationTypePanel = new JPanel();
+		backpropagationTypePanel.setLayout(new BoxLayout(backpropagationTypePanel, BoxLayout.Y_AXIS));
+		backpropagationTypePanel.setBorder(new TitledBorder("Tipo de retropropagación"));
+		backpropagationType = new JComboBox<String>();
+		backpropagationType.addItem("Offline");
+		backpropagationType.addItem("Online");
+		backpropagationType.setToolTipText("Indica si usar una retropropagación online o una offline.");
+		backpropagationTypePanel.add(backpropagationType);
+		comboOptionsPanel.add(backpropagationTypePanel);
+		
+		neuronsTypePanel = new JPanel();
+		neuronsTypePanel.setLayout(new BoxLayout(neuronsTypePanel, BoxLayout.Y_AXIS));
+		neuronsTypePanel.setBorder(new TitledBorder("Tipo de neuronas"));
+		neuronsType = new JComboBox<>();
+		neuronsType.addItem("Sigmoide");
+		neuronsType.addItem("Softmax");
+		neuronsType.setToolTipText("Indica si usar neuronas de tipo sigmoide o de tipo softmax en la capa de salida");
+		neuronsTypePanel.add(neuronsType);
+		comboOptionsPanel.add(neuronsTypePanel);
+		
+		functionToOptimizePanel = new JPanel();
+		functionToOptimizePanel.setLayout(new BoxLayout(functionToOptimizePanel, BoxLayout.Y_AXIS));
+		functionToOptimizePanel.setBorder(new TitledBorder("Function a optimizar"));
+		functionToOptimize = new JComboBox<>();
+		functionToOptimize.addItem("Error cuadrático medio");
+		functionToOptimize.addItem("Entropía");
+		functionToOptimize.setToolTipText("Indica si el entrenamiento debe de tratar de mejorar el MSE o la entropía.");
+		functionToOptimizePanel.add(functionToOptimize);
+		comboOptionsPanel.add(functionToOptimizePanel);
+		
+		configWindow.add(comboOptionsPanel);
+		configWindow.add(Box.createVerticalStrut(5));
+		
 		// Learning factor panel
 		learningFactorPanel = new JPanel();
 		learningFactorPanel.setLayout(new BoxLayout(learningFactorPanel,
 				BoxLayout.X_AXIS));
-		learningFactorPanel
-				.setBorder(new TitledBorder("Factor de aprendizaje"));
+		learningFactorPanel.setBorder(new TitledBorder("Factor de aprendizaje"));
 		learningFactor = new JSlider(0, 1000);
 		learningFactor.setValue(900);
 		learningFactor.setLabelTable(makeDictionaryForASlider(0, 1000, 100));
@@ -129,12 +184,11 @@ public class MainWindow extends JFrame {
 		learningFactor.setMinorTickSpacing(10);
 		learningFactor.setMajorTickSpacing(50);
 		learningFactor.setPaintTicks(true);
-		learningFactor
-				.setToolTipText("Indica la velocidad de aprendizaje de cada neurona.");
+		learningFactor.setToolTipText("Indica la velocidad de aprendizaje de cada neurona.");
 		learningFactorPanel.add(learningFactor);
 		learningFactorPanel.setBounds(5, 5, 30, 30);
 		configWindow.add(learningFactorPanel);
-		configWindow.add(Box.createVerticalStrut(10));
+		configWindow.add(Box.createVerticalStrut(5));
 
 		// Inertia factor panel
 		inertiaFactorPanel = new JPanel();
@@ -153,7 +207,7 @@ public class MainWindow extends JFrame {
 		inertiaFactorPanel.add(inertiaFactor);
 		inertiaFactorPanel.setBounds(5, 5, 30, 30);
 		configWindow.add(inertiaFactorPanel);
-		configWindow.add(Box.createVerticalStrut(10));
+		configWindow.add(Box.createVerticalStrut(5));
 
 		// /Spinner options
 		spinnerOptionsPanel = new JPanel();
@@ -222,7 +276,7 @@ public class MainWindow extends JFrame {
 		spinnerOptionsPanel.add(timesPanel);
 
 		configWindow.add(spinnerOptionsPanel);
-		configWindow.add(Box.createVerticalStrut(10));
+		configWindow.add(Box.createVerticalStrut(5));
 
 		// Action panel
 		actionPanel = new JPanel();
@@ -236,7 +290,7 @@ public class MainWindow extends JFrame {
 		trainButton.setEnabled(false);
 		actionPanel.add(trainButton);
 		configWindow.add(actionPanel);
-		// configWindow.add(Box.createVerticalStrut(10));
+		// configWindow.add(Box.createVerticalStrut(5));
 
 		progressBar = new JProgressBar(0, (int) times.getValue() + 2);
 		progressBar.setValue(0);
@@ -353,6 +407,18 @@ public class MainWindow extends JFrame {
 
 	public boolean getUseBias() {
 		return useBias.isSelected();
+	}
+	
+	public String getNeuronsType() {
+		return (String) neuronsType.getSelectedItem();
+	}
+	
+	public String getFunctionToOptimize() {
+		return (String) functionToOptimize.getSelectedItem();
+	}
+	
+	public String getBackpropagationType() {
+		return (String) backpropagationType.getSelectedItem();
 	}
 
 	private void onLoadTrainButtonClicked() {
