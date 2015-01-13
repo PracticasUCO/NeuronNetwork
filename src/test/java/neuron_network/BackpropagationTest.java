@@ -206,7 +206,6 @@ public class BackpropagationTest {
 		_network.use_bias = true;
 		_network.setInertiaValue(0.9);
 		_network.neuronType = _network.neuronType.SOFTMAX;
-		//_network.minimize = _network.minimize.ENTROPY;
 		int times = 750;
 		double withoutImprovement = 0;
 		double badLearnings = 0;
@@ -225,8 +224,8 @@ public class BackpropagationTest {
 					_network.spreadOut();
 					_network.onlineBackpropagation(input, xor_input.get_output(input));
 				}
-				_network.spreadOut();
 			}
+			_network.spreadOut();
 
 			double endMSEError = _network.getMeanSquaredError(xor_input);
 			double endEntropy = _network.getCCR(xor_input);
@@ -253,5 +252,82 @@ public class BackpropagationTest {
 				(1-withoutImprovement) * 100), 0, withoutImprovement, 0.05);
 		assertEquals(String.format("Expected that 80 %% of patrons will have a perfect learning but it was %s %%",
 				zeroError * 100), 1d, zeroError, 0.2);
+	}
+	
+	@Test
+	public void checkEntropyImproveOrStayEqualWithSoftmaxPlusEntropyImprovement() throws IOException {
+		URL url = Thread.currentThread().getContextClassLoader()
+				.getResource("neuron_network/xor_2_outputs.dat");
+		NetworkData xor_input = new NetworkData(url.getPath());
+		_network.setOutputLayerSize(xor_input.outputs_length());
+		_network.setHiddenLayersSize(2, 20);
+		_network.use_bias = true;
+		_network.setInertiaValue(0.9);
+		_network.neuronType = _network.neuronType.SOFTMAX;
+		_network.minimize = _network.minimize.ENTROPY;
+		
+		int times = 750;
+		double perfectLearnings = 0;
+		
+		for(int t = 0; t < times; t++){
+			_network.setRandomInputs();
+			_network.spreadOut();
+
+			double startEntropy = _network.getEntropy(xor_input);
+
+			for(int i = 0; i < 500; i++) {
+				for(ArrayList<Double> input : xor_input) {
+					_network.feed(input);
+					_network.spreadOut();
+					_network.onlineBackpropagation(input, xor_input.get_output(input));
+				}
+			}
+			_network.spreadOut();
+
+			double endEntropy = _network.getEntropy(xor_input);
+			
+			assertTrue(String.format("Test number: %s. Entropy can't be higher after a training. Start entropy: %s, End entropy: %s", 
+					t, startEntropy, endEntropy), endEntropy <= startEntropy);
+			
+			if(endEntropy < SOFT_DELTA) {
+				perfectLearnings++;
+			}
+		}
+		
+		perfectLearnings /= times;
+		
+		assertEquals(String.format("It must be altmost 90 %% of trainnings with an aggresive learning. But it was %s %%", 
+				perfectLearnings * 100), 1, perfectLearnings, 0.1);
+	}
+	
+	@Test
+	public void checkSimpleOfflineBackpropagation() throws IOException {
+		URL url = Thread.currentThread().getContextClassLoader()
+				.getResource("neuron_network/xor.dat");
+		NetworkData xor_input = new NetworkData(url.getPath());
+		_network.setOutputLayerSize(xor_input.outputs_length());
+		_network.setHiddenLayersSize(2, 20);
+		_network.use_bias = true;
+		_network.setInertiaValue(0.9);
+		
+		int times = 300;
+		
+		for(int i = 0; i < times; i++) {
+			_network.setRandomInputs();
+			_network.spreadOut();
+			
+			double startError = _network.getMeanSquaredError(xor_input);
+			
+			for(int j = 0; j < xor_input.patrons_length() * 20; j++){
+				_network.offlineBackpropagation(xor_input);
+			}
+			_network.spreadOut();
+			
+			double endError = _network.getMeanSquaredError(xor_input);
+			
+			assertTrue(String.format("Error must be improved. End error: %s - Start error: %s",
+					endError, startError), endError < startError);
+		}
+		
 	}
 }
