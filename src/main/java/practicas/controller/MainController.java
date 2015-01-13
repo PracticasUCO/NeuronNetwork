@@ -20,6 +20,8 @@ package practicas.controller;
 
 import java.io.IOException;
 
+import neuron_network.MultilayerPerceptron.errorToMinimize;
+import neuron_network.MultilayerPerceptron.neuronType;
 import neuron_network.NetworkData;
 import practicas.gui.MainWindow;
 
@@ -81,8 +83,32 @@ public class MainController {
 		worker.minimumImprovement = window.getMinimumImprovement();
 		worker.trainData = trainData;
 		worker.testData = testData;
-		worker.setup(window.getHiddenLayers(), window.getHiddenNeurons(),
-				trainData.outputs_length(), window.getUseBias());
+		worker.learningFactor = window.getLearningFactor();
+		worker.inertiaValue = window.getInertiaFactor();
+		worker.useBias = window.getUseBias();
+		
+		if(window.getNeuronsType().equalsIgnoreCase("SIGMOIDE")) {
+			worker.neuronType = neuronType.SIGMOIDE;
+		}
+		else {
+			worker.neuronType = neuronType.SOFTMAX;
+		}
+		
+		if(window.getFunctionToOptimize().equalsIgnoreCase("Entropía")) {
+			worker.errorToMinimize = errorToMinimize.ENTROPY;
+		}
+		else {
+			worker.errorToMinimize = errorToMinimize.MSE;
+		}
+		
+		if(window.getBackpropagationType().equalsIgnoreCase("Online")) {
+			worker.offlineBackpropagation = false;
+		}
+		else {
+			worker.offlineBackpropagation = true;
+		}
+		
+		worker.setup(window.getHiddenLayers(), window.getHiddenNeurons());
 		window.setStatus("Entrenamiento 1 de " + window.getTimes());
 		window.setProgressBarValue(1);
 		window.disableAllButtons();
