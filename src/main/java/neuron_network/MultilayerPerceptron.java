@@ -792,6 +792,7 @@ public class MultilayerPerceptron {
 	 *            minimum improvement to continue the training
 	 * @param trainListener
 	 *            a Consumer that receives current training error
+	 * @param offlineBackpropagation indicate if use an online back propagation or not
 	 * @return an double Array with two elements where first element is train
 	 *         error and last element is test error
 	 * @throws IllegalArgumentException
@@ -799,14 +800,19 @@ public class MultilayerPerceptron {
 	 *             of the output layer
 	 */
 	public double[] trainByBackpropagation(NetworkData trainData,
-			NetworkData testData, int maxiter, double minimumImprovement,
-			Consumer<Double> trainListener) {
+			NetworkData testData, int maxiter, double minimumImprovement, 
+			boolean offlineBackpropagation, Consumer<Double> trainListener) {
 		setRandomInputs();
 
 		for (int i = 0; i < maxiter; i++) {
 			double startError = getMeanSquaredError(trainData);
 
-			offlineBackpropagation(trainData);
+			if(offlineBackpropagation) {
+				offlineBackpropagation(trainData);
+			}
+			else {
+				onlineBackpropagation(trainData);
+			}
 
 			double endError = getMeanSquaredError(trainData);
 
@@ -846,7 +852,7 @@ public class MultilayerPerceptron {
 	public double[] trainByBackpropagation(NetworkData trainData,
 			NetworkData testData, int maxiter, double minimumImprovement) {
 		return trainByBackpropagation(trainData, testData, maxiter,
-				minimumImprovement, d -> {
+				minimumImprovement, false, d -> {
 				});
 	}
 
