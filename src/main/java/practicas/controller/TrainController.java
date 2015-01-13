@@ -64,27 +64,54 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 	public NetworkData testData;
 	public int maxiter;
 	public double minimumImprovement;
+	public MultilayerPerceptron.neuronType neuronType;
+	public MultilayerPerceptron.errorToMinimize errorToMinimize;
+	public boolean offlineBackpropagation;
+	public double learningFactor;
+	public double inertiaValue;
+	public boolean useBias;
 
 	public TrainController() {
 		super();
 		network = new MultilayerPerceptron();
+		neuronType = neuronType.SIGMOIDE;
+		errorToMinimize = errorToMinimize.MSE;
+		learningFactor = network.getLearningFactor();
+		inertiaValue = network.getInertiaValue();
 	}
 
-	public void setup(int hiddenLayers, int hiddenNeurons, int outputSize,
-			boolean useBias) {
-		network.use_bias = useBias;
+	public void setup(int hiddenLayers, int hiddenNeurons) {
+		network.use_bias = this.useBias;
 		network.setHiddenLayersSize(hiddenLayers, hiddenNeurons);
-		network.setOutputLayerSize(outputSize);
+		network.setOutputLayerSize(trainData.outputs_length());
+		network.neuronType = this.neuronType;
+		network.minimize = this.errorToMinimize;
+		network.setInertiaValue(inertiaValue);
+		network.setLearningFactor(learningFactor);
 	}
 
 	@Override
 	protected FinalReport doInBackground() throws Exception {
 		ArrayList<Double> trainError = new ArrayList<Double>();
 		ArrayList<Double> testError = new ArrayList<Double>();
+		
+		System.out.println("Configurada red neuronal con: ");
+		System.out.println(String.format("Numero de capas ocultas: %s - Neuronas por capa oculta: %s",
+				network.getNumberOfHiddenLayers(), network.getLayerSize(0)));
+		System.out.println(String.format("Tamaño de la capa de salida: %s neuronas",
+				network.getOutputLayerSize()));
+		System.out.println(String.format("Uso de bias: %s", network.use_bias));
+		System.out.println(String.format("Tipo de neuronas: %s", network.neuronType));
+		System.out.println(String.format("Funcion a minimizar: %s", network.minimize));
+		System.out.println(String.format("Uso de la retropropagación offline: %s", offlineBackpropagation));
+		System.out.println(String.format("Factor de aprendizaje: %s", network.getLearningFactor()));
+		System.out.println(String.format("Factor de inercia: %s", network.getInertiaValue()));
+		System.out.println("");
 
 		for (int i = 0; i < times; i++) {
 			double[] results = network.trainByBackpropagation(trainData,
-					testData, maxiter, minimumImprovement);
+					testData, maxiter, minimumImprovement, this.offlineBackpropagation);
+			
 			trainError.add(results[0]);
 			testError.add(results[1]);
 			System.out.println("Acabado entrenamiento " + (i + 1)
