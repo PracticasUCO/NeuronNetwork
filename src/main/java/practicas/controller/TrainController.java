@@ -115,18 +115,19 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 
 		for (int i = 0; i < times; i++) {
 			network.trainByBackpropagation(trainData, maxiter, minimumImprovement, this.offlineBackpropagation);
+			network.spreadOut();
 			
 			if(errorToMinimize.equals(errorToMinimize.MSE)) {
 				trainError.add(network.getMeanSquaredError(trainData));
 				testError.add(network.getMeanSquaredError(testData));
 			}
 			else {
-				trainError.add(network.getEntropy(testData));
+				trainError.add(network.getEntropy(trainData));
 				testError.add(network.getEntropy(testData));
 			}
 			
-			System.out.println(String.format("Trainning %s finished with the following error: %s",
-					i + 1, testError.get(testError.size() - 1)));
+			System.out.println(String.format("Trainning %s finished with the following error: train: <%s> test: <%s>",
+					i + 1, trainError.get(trainError.size() - 1), testError.get(testError.size() - 1)));
 			
 			publish(new TrainResults(i, trainError.get(trainError.size() - 1), testError.get(testError.size() - 1)));
 		}
