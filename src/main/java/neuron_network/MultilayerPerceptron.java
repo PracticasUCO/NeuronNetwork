@@ -477,11 +477,14 @@ public class MultilayerPerceptron {
 			}
 			
 			for(int i = 0; i < this.getOutputLayerSize(); i++) {
-				e += expected.get(i) * Math.log(this.getOutput(i)) / Math.log(2); 
+				if(this.getOutput(i) != 0D) {
+					e += expected.get(i) * Math.log(this.getOutput(i));
+				}
 			}
 			
 			entropy += e;
 		}
+		
 		
 		entropy *= -1;
 		entropy /= (data.patrons_length() * data.outputs_length());
@@ -710,9 +713,68 @@ public class MultilayerPerceptron {
 			ArrayList<Double> desiredOutput) {
 		feed(input);
 		spreadOut();
+		
+		if(neuronType.equals(neuronType.SOFTMAX)){
+			applySoftmax();
+		}
 		setInputChangesToZero();
 		updateDeltas(desiredOutput);
 		updateInputChanges();
+		adjustWeights();
+	}
+	
+	/**
+	 * <p>
+	 * It makes a online back propagation trying to improve the neuron network
+	 * result for the given neuron.
+	 * </p>
+	 * 
+	 * <p>
+	 * Because all neuron coefficients will change after this, please, don't
+	 * forget to call to spreadOut
+	 * </p>
+	 * 
+	 * @param data the data used to improve network's neurons
+	 * @throws IllegalArgumentException
+	 *             desiredOutput length is not equal to the length of the output
+	 *             layer
+	 */
+	public void onlineBackpropagation(NetworkData data) {
+		for(ArrayList<Double> input : data) {
+			onlineBackpropagation(input, data.get_output(input));
+		}
+	}
+	
+	/**
+	 * <p>
+	 * It makes a offline back propagation trying to improve the neuron network
+	 * result for the given data.
+	 * </p>
+	 * 
+	 * <p>
+	 * An offline back propagation is more efficient than an online 
+	 * back propagation, because it will update delta values after
+	 * look all patrons.
+	 * </p>
+	 * 
+	 * <p>
+	 * Because all neuron coefficients will change after this, please don't
+	 * forget to call spreadOut
+	 * </p>
+	 * 
+	 * @param data the data used to improve network's neurons
+	 * @throws IllegalArgumentException when desiredOutput length is not equal to the length of the output layer
+	 */
+	public void offlineBackpropagation(NetworkData data) {
+		setInputChangesToZero();
+		
+		for(ArrayList<Double> input : data) {
+			feed(input);
+			spreadOut();
+			updateDeltas(data.get_output(input));
+			updateInputChanges();
+		}
+		
 		adjustWeights();
 	}
 
@@ -1005,43 +1067,53 @@ public class MultilayerPerceptron {
 					n.delta *= (1 - n.output);
 				}
 				else {
-					n.delta = -(desiredOutput.get(i) / n.output);
-					n.delta *= n.output;
-					n.delta *= (1 - n.output);
+					if(n.output != 0) {
+						n.delta = -(desiredOutput.get(i) / n.output);
+						n.delta *= n.output;
+						n.delta *= (1 - n.output);
+					}
+					else {
+						n.delta = Double.MIN_NORMAL;
+					}
 				}
 			}
 		}
 		else {
-			ArrayList<Neuron> lastH = _hiddenLayers.get(_hiddenLayers.size() - 1);
 			applySoftmax();
-			//applyPrediction();
 			
 			for(int j = 0; j < _outputLayer.size(); j++) {
 				Neuron neuronaJ = _outputLayer.get(j);
+				double delta = 0;
 				
 				for(int i = 0; i < _outputLayer.size(); i++) {
-					Neuron neuronaI = _outputLayer.get(i);
-					double delta;
+					double deltaInterno = 0;
 					
 					if(minimize.equals(errorToMinimize.MSE)){
-						delta = (desiredOutput.get(i) - this.getOutput(i));
+						deltaInterno += (desiredOutput.get(i) - this.getOutput(i));
 					}
 					else {
-						delta = (desiredOutput.get(i) / this.getOutput(i));
-						//delta = (desiredOutput.get(i) - this.getOutput(i));
+						if(this.getOutput(i) != 0D){
+							deltaInterno += (desiredOutput.get(i) / this.getOutput(i));
+						}
+						else {
+							deltaInterno += Double.MIN_NORMAL;
+						}
 					}
-					delta *= this.getOutput(j);
+					
+					deltaInterno *= this.getOutput(j);
 					
 					if(i == j) {
-						delta *= (1 - this.getOutput(i));
+						deltaInterno *= (1 - this.getOutput(i));
 					}
 					else {
-						delta *= this.getOutput(i);
-						delta *= -1;
+						deltaInterno *= this.getOutput(i);
+						deltaInterno *= -1;
 					}
 					
-					neuronaJ.delta = -1 * delta;
+					delta += deltaInterno;
 				}
+				
+				neuronaJ.delta = -1 * delta;
 			}
 		}
 	}
@@ -1129,7 +1201,7 @@ public class MultilayerPerceptron {
 					current -= getLearningFactor() * n.inputsChanges.get(i);
 					current -= getLearningFactor() * getInertiaValue()
 							* n.lastInputsChanges.get(i);
-
+					
 					n.inputs.set(i, current);
 				}
 
@@ -1151,6 +1223,7 @@ public class MultilayerPerceptron {
 				current -= getLearningFactor() * n.inputsChanges.get(i);
 				current -= getLearningFactor() * getInertiaValue()
 						* n.lastInputsChanges.get(i);
+				
 				n.inputs.set(i, current);
 			}
 
