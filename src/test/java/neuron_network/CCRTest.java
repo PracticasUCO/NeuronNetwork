@@ -45,7 +45,7 @@ public class CCRTest {
 	@Test
 	public void checkCCRResultsAfterTrainning() {
 		network.use_bias = true;
-		network.trainByBackpropagation(data, data, 1000, 1e-10);
+		network.trainByBackpropagation(data, 1000, 1e-10);
 
 		double correct = 0;
 
@@ -69,7 +69,7 @@ public class CCRTest {
 	@Test
 	public void checkCCRIsBetterAfterTrainning() {
 		double ccrBeforeTrain = network.getCCR(data, true);
-		network.trainByBackpropagation(data, data, 1000, 1e-10);
+		network.trainByBackpropagation(data, 1000, 1e-10);
 		double ccrAfterTrain = network.getCCR(data, true);
 		
 		assertTrue(ccrAfterTrain > ccrBeforeTrain);
