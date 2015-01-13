@@ -50,7 +50,7 @@ class FinalReport {
 			double testMean, double testDesviation, String network) {
 		this.trainMean = trainMean;
 		this.trainDesviation = trainDesviation;
-		this.testMean = testDesviation;
+		this.testMean = testMean;
 		this.testDesviation = testDesviation;
 		this.network = network;
 	}
@@ -180,6 +180,10 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 			e.printStackTrace();
 		}
 
+		System.out.println(String.format("Final reports"));
+		System.out.println(String.format("Train phase: %s +- %s", report.trainMean, report.trainDesviation));
+		System.out.println(String.format("Test phase: %s +- %s", report.testMean, report.testDesviation));
+		
 		MainController.processFinalTrain(report.trainMean,
 				report.trainDesviation, report.testMean, report.testDesviation,
 				report.network);
