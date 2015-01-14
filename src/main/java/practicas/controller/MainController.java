@@ -132,7 +132,7 @@ public class MainController {
 
 	public static void processFinalTrain(double trainMean,
 			double trainDesviation, double testMean, double testDesviation,
-			String network) {
+			double ccr, double entropy, double mse, String network) {
 		window.appendOutput("Entrenamiento finalizado.");
 		window.appendOutput("Red neuronal: ");
 		window.appendOutput(network);
@@ -141,6 +141,10 @@ public class MainController {
 				+ trainDesviation);
 		window.appendOutput("Error en test: " + testMean + " +- "
 				+ testDesviation);
+		window.appendOutput("");
+		window.appendOutput(String.format("MSE en test: %s %%", mse));
+		window.appendOutput(String.format("CCR en test: %s %%", ccr * 100));
+		window.appendOutput(String.format("Entropía en test: %s %%", entropy));
 		window.setProgressBarValue(window.getProgressBarMaximumValue());
 		window.setStatus("Entrenamiento finalizado");
 		window.enableAllButtons();

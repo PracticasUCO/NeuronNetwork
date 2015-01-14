@@ -44,15 +44,22 @@ class FinalReport {
 	public double trainDesviation;
 	public double testMean;
 	public double testDesviation;
+	public double ccr;
+	public double entropyTest;
+	public double mseTest;
 	public String network;
 
 	public FinalReport(double trainMean, double trainDesviation,
-			double testMean, double testDesviation, String network) {
+			double testMean, double testDesviation, double ccr,
+			double entropyTest, double mseTest, String network) {
 		this.trainMean = trainMean;
 		this.trainDesviation = trainDesviation;
 		this.testMean = testMean;
 		this.testDesviation = testDesviation;
 		this.network = network;
+		this.ccr = ccr;
+		this.entropyTest = entropyTest;
+		this.mseTest = mseTest;
 	}
 }
 
@@ -136,6 +143,9 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 		double testMean = 0;
 		double trainDesviation = 0;
 		double testDesviation = 0;
+		double ccrTest = network.getCCR(testData);
+		double mseTest = network.getMeanSquaredError(testData);
+		double entropyTest = network.getEntropy(testData);
 
 		for (Double error : trainError) {
 			trainMean += error;
@@ -167,7 +177,7 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 		}
 
 		return new FinalReport(trainMean, trainDesviation, testMean,
-				testDesviation, network.toString());
+				testDesviation, ccrTest, entropyTest, mseTest, network.toString());
 	}
 
 	@Override
@@ -186,7 +196,7 @@ public class TrainController extends SwingWorker<FinalReport, TrainResults> {
 		
 		MainController.processFinalTrain(report.trainMean,
 				report.trainDesviation, report.testMean, report.testDesviation,
-				report.network);
+				report.ccr, report.mseTest, report.entropyTest, report.network);
 	}
 
 	@Override
