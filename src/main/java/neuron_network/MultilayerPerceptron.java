@@ -829,6 +829,22 @@ public class MultilayerPerceptron {
 	public void trainByBackpropagation(NetworkData trainData, int maxiter, double minimumImprovement, Consumer<Double> trainListener) {
 		trainByBackpropagation(trainData, maxiter, minimumImprovement, false, trainListener);
 	}
+	
+	/**
+	 * Check if the network is a softmax network
+	 * @return true when it is a softmax network, false otherwise
+	 */
+	public boolean isSoftmax() {
+		return this.neuronType == neuronType.SOFTMAX;
+	}
+	
+	/**
+	 * Check if the network is a sigmoide network
+	 * @return true when it is a sofmax network, false otherwise
+	 */
+	public boolean isSigmoide() {
+		return this.neuronType == neuronType.SIGMOIDE;
+	}
 
 	/**
 	 * It sets at the end of the output layer the specified value
