@@ -25,6 +25,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import neuron_network.MultilayerPerceptron.neuronType;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -506,5 +508,23 @@ public class MultilayerPerceptronTest {
 		String network = _xor_2_mp.toString();
 		String network_regex = "Learning factor: \\d+\\.\\d+\\nInertia value: \\d+\\.\\d+\\nNumber of hidden layers: \\d+\\nSize of hidden layers: \\d+\\nSize of output layer: \\d+\\n\\n(Layer \\d+ of \\d+\\n(\\t\\(.*\\) \\+ \\d+\\.\\d+ ---Neuron---> .*\\d+\n)+\\n)+Output layer\\n(.*\\n)+";
 		assertTrue(network.matches(network_regex));
+	}
+	
+	@Test
+	public void checkIsSigmoideMethod() {
+		_empty_mp.neuronType = neuronType.SIGMOIDE;
+		assertTrue(_empty_mp.isSigmoide());
+		
+		_empty_mp.neuronType = neuronType.SOFTMAX;
+		assertFalse(_empty_mp.isSigmoide());
+	}
+	
+	@Test
+	public void checkIsSoftmaxMethod() {
+		_empty_mp.neuronType = neuronType.SIGMOIDE;
+		assertFalse(_empty_mp.isSoftmax());
+		
+		_empty_mp.neuronType = neuronType.SOFTMAX;
+		assertTrue(_empty_mp.isSoftmax());
 	}
 }
