@@ -29,23 +29,23 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import javax.swing.Box;
-import javax.swing.JFrame;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.SpinnerModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.JSlider;
-import javax.swing.JTabbedPane;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
-import javax.swing.JProgressBar;
-import javax.swing.JFileChooser;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.border.TitledBorder;
 
 import practicas.controller.MainController;
 

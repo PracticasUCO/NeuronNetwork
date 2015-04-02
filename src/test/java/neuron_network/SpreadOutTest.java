@@ -20,10 +20,10 @@ package neuron_network;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-import org.junit.Before;
-
 import java.util.ArrayList;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class SpreadOutTest {
 	private MultilayerPerceptron _simple_xor;

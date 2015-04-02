@@ -18,14 +18,14 @@
 
 package neuron_network;
 
-import java.util.ArrayList;
-
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-import org.junit.Before;
-import java.net.URL;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for {@link NetworkData}.

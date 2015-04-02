@@ -20,13 +20,13 @@ package neuron_network;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-import org.junit.Before;
-
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
-import java.net.URL;
-import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class MeanSquaredErrorTest {
 	private MultilayerPerceptron _xor_2_layers;

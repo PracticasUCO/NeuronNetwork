@@ -18,14 +18,14 @@
 
 package practicas.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import javax.swing.SwingWorker;
 
 import neuron_network.MultilayerPerceptron;
 import neuron_network.NetworkData;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 class TrainResults {
 	public int iteration;

@@ -18,14 +18,13 @@
 
 package neuron_network;
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.lang.Iterable;
-import java.util.Iterator;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * This class stores a lot of inputs of the Neuron Network with their desired

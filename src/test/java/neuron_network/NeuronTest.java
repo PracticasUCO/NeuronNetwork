@@ -18,10 +18,10 @@
 
 package neuron_network;
 
-import org.junit.Test;
-import org.junit.Before;
-
 import java.util.Random;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for {@link Neuron}.

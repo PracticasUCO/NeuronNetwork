@@ -18,10 +18,9 @@
 
 package neuron_network;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.function.Consumer;
-import java.security.SecureRandom;
-import java.lang.IllegalArgumentException;
 
 /**
  * The MultilayerPerceptron class defines a NeuronNetwork that organizes the
